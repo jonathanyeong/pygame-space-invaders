@@ -15,12 +15,17 @@ def main():
     background = background.convert()
     background.fill((10, 10, 10))
 
-    # Display some text
-    font = pygame.font.Font(None, 36)
-    text = font.render("Space Invaders", 1, (250, 250, 250))
-    textpos = text.get_rect()
+    font = pygame.font.Font(None, 42) # Init some font object
+    # Display title text
+    title_text = font.render("Space Invaders", 1, (250, 250, 250))
+    textpos = title_text.get_rect()
     textpos.centerx = background.get_rect().centerx
-    background.blit(text, textpos)
+    background.blit(title_text, textpos)
+    # Display instruction text
+    instruction_text = font.render("Press B to start", 1, (250, 250, 250))
+    instruction_textpos = instruction_text.get_rect()
+    instruction_textpos.midbottom = background.get_rect().midbottom
+    background.blit(instruction_text, instruction_textpos)
 
     # Blit everything to the screen
     screen.blit(background, (0, 0))
