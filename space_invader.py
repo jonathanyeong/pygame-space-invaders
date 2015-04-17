@@ -57,6 +57,10 @@ class SpaceInvader(object):
             for event in pygame.event.get():
                 if event.type == QUIT:
                     return
+                keys = pygame.key.get_pressed()
+
+                if keys[K_ESCAPE]:
+                    return
 
             self.screen.blit(self.background, (0, 0))
             pygame.display.flip()
