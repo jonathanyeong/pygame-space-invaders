@@ -3,6 +3,7 @@
 import os
 import sys
 import pygame
+from IPython import embed
 from pygame.locals import *
 
 
@@ -48,10 +49,11 @@ class SpaceInvader(object):
 
     def run(self):
         self.main_menu_text()
+        logo = pygame.image.load("assets/images/Logo.png")
         # Blit everything to the screen
         self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
-
+        bg_center = self.background.get_rect().center
         # Event loop
         while 1:
             for event in pygame.event.get():
@@ -63,6 +65,7 @@ class SpaceInvader(object):
                     return
 
             self.screen.blit(self.background, (0, 0))
+            self.background.blit(logo, logo.get_rect(center=bg_center))
             pygame.display.flip()
 
 if __name__ == '__main__':
