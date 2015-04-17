@@ -17,19 +17,30 @@ class SpaceInvader(object):
 
         self.font = pygame.font.Font(None, 42) # Init some font object
 
-    def main(self):
-        # Initialise screen
+    def draw_text(self, render_text, pos):
+        text = self.font.render(render_text, 1, (250, 250, 250))
+        textpos = text.get_rect()
+        (x, y) = pos
+
+        if (y == 0): # We know that this is at the top of the screen
+            textpos.midtop = pos
+        elif (y == self.background.get_rect().height): # We know that this is the bottom of screen
+            textpos.midbottom = pos
+        else:
+            textpos.center = pos
+
+        return text, textpos
+
+    def main_menu_text(self):
         # Display title text
-        title_text = self.font.render("Space Invaders", 1, (250, 250, 250))
-        textpos = title_text.get_rect()
-        textpos.centerx = self.background.get_rect().centerx
+        (title_text, textpos) = self.draw_text("Space Invaders", self.background.get_rect().midtop)
         self.background.blit(title_text, textpos)
         # Display instruction text
-        instruction_text = self.font.render("Press B to start", 1, (250, 250, 250))
-        instruction_textpos = instruction_text.get_rect()
-        instruction_textpos.midbottom = self.background.get_rect().midbottom
-        self.background.blit(instruction_text, instruction_textpos)
+        (instruction_text, textpos) = self.draw_text("Press B to start",self.background.get_rect().midbottom);
+        self.background.blit(instruction_text, textpos)
 
+    def run(self):
+        self.main_menu_text()
         # Blit everything to the screen
         self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
@@ -44,4 +55,4 @@ class SpaceInvader(object):
             pygame.display.flip()
 
 if __name__ == '__main__':
-    game = SpaceInvader().main()
+    game = SpaceInvader().run()
