@@ -4,7 +4,8 @@ from pyvader import player
 class TestPlayer:
     def setup(self):
         print "Setup"
-        self.player = player.Player()
+        boundary = 10
+        self.player = player.Player(boundary)
 
     def teardown(self):
         print "Teardown"
@@ -27,11 +28,36 @@ class TestPlayer:
         # Not entirely sure what the design of this will be
         assert_true(self.player.fire())
 
-#class PlayerTests(unittest.TestCase):
-#    def setUp(self):
-#        self.player = player.Player()
-#    def test_init_player(self):
-#        self.assertNotEqual(self.player, None, "Player doesn't exist")
-#
-#if __name__ == '__main__':
-#    unittest.main()
+    def test_current_pos_of_player(self):
+        assert_not_equal(self.player.position(), None)
+    
+    def test_move_player_right(self):
+        prevX = self.player.position()
+        x = self.player.move_right()
+        assert_true(x > prevX)
+
+    def test_move_player_left(self):
+        prevX = self.player.position()
+        x = self.player.move_left()
+        assert_true(x < prevX)
+
+    def test_player_right_boundary(self):
+        # Assume that the max width of the screen is 10
+        # This is decided in the setup phase
+        boundary = 10
+        for i in range(0, 20):
+            x = self.player.move_right()
+    
+        print "x pos: ", x
+        assert(x == boundary)
+
+    def test_player_left_boundary(self):
+        # Assume that the max width of the screen is 10
+        # This is decided in the setup phase
+        boundary = 0
+        for i in range(0, 20):
+            x = self.player.move_left()
+    
+        print "x pos: ", x
+        assert(x == boundary)
+
