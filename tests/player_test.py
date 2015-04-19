@@ -1,14 +1,18 @@
 from nose.tools import *
 from pyvader import player
 
-def setup():
-    print "SETUP!"
+class TestPlayer:
+    def setup(self):
+        print "Setup"
+        self.player = player.Player()
 
-def teardown():
-    print "TEAR DOWN!"
+    def teardown(self):
+        print "Teardown"
+        # Delete stuff?
 
-def test_basic():
-    print "I RAN!"
+    def test_player_exists(self):
+        assert_not_equal(self.player, None)
+    
 
 
 #class PlayerTests(unittest.TestCase):
