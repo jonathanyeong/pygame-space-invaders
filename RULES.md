@@ -3,7 +3,7 @@
 ## Player
 
 - Can move left and right to the edge of the screen.
-- Can fire a missle.
+- Can fire a missile.
 - Has 3 lives.
 - Will lose a life if hit by an alien missile.
 - Will lose game if all lives are lost. Or once the aliens reach the player.
