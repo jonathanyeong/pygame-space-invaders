@@ -49,7 +49,7 @@ class SpaceInvader(object):
 
     def run(self):
         self.main_menu_text()
-        logo = pygame.image.load("assets/images/Logo.png")
+        logo = pygame.image.load("assets/images/ClearLogo.png")
         # Blit everything to the screen
         self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
