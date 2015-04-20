@@ -7,7 +7,7 @@ class Player(object):
         # Player can only move on X axis
         # Player starts in the middle of the screen
         self._currX = screen_x/2
-        self._currY = screen_y
+        self._currY = screen_y - 100
         self._speed = 1  # Some arbitrary speed of movement
         self._boundary = screen_x 
 
@@ -32,3 +32,7 @@ class Player(object):
         if (self._currX > 0):
             self._currX -= self._speed
         return self.position()
+
+    def render(self):
+        print "player render"
+        return self._sprite, self.position()
