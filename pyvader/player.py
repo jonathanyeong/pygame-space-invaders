@@ -39,5 +39,4 @@ class Player(object):
         return self.position()
 
     def render(self):
-        print "player render"
         return self._sprite, self.position()
