@@ -13,7 +13,7 @@ class Player(object):
         self._currX = screen_x/2
         margin = 10  # Arbitrary number
         self._currY = screen_y - self._sprite.get_rect().height - margin
-        self._speed = 1  # Some arbitrary speed of movement
+        self._speed = 15  # Some arbitrary speed of movement
         self._boundary = screen_x 
 
     def get_lives(self):
@@ -29,7 +29,8 @@ class Player(object):
         return (self._currX, self._currY)
 
     def move_right(self):
-        if (self._currX < self._boundary):
+        sprite_width = self._sprite.get_rect().width
+        if (self._currX < (self._boundary - sprite_width*1.5)):
             self._currX += self._speed
         return self.position()
 
