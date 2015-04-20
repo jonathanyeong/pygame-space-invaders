@@ -53,25 +53,47 @@ class SpaceInvader(object):
         self.background.blit(instruction_text, textpos)
 
     def run(self):
-        self.main_menu_text()
-        logo = pygame.image.load("pyvader/assets/images/ClearLogo.png")
-        # Blit everything to the screen
+        # Worry about FPS tick later
+        START_GAME = False  # ie Main Menu
         self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
         bg_center = self.background.get_rect().center
         # Event loop
         while 1:
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    return
-                keys = pygame.key.get_pressed()
+            if START_GAME == False:
+                self.main_menu_text()
+                logo = pygame.image.load("pyvader/assets/images/ClearLogo.png")
+            
+                for event in pygame.event.get():
+                    if event.type == QUIT:
+                        return
+                    if event.type == KEYDOWN:
+                        if event.key == K_ESCAPE:
+                            return
+                        if event.key == K_b:
+                            print "start game"
+                            START_GAME = True
+                            break
+                        # Option to load full screen as well
 
-                if keys[K_ESCAPE]:
-                    return
+                self.background.blit(logo, logo.get_rect(center=bg_center))
+                self.screen.blit(self.background, (0, 0))
+                pygame.display.flip()
+            elif START_GAME == True:
+                for event in pygame.event.get():
+                    if event.type == QUIT:
+                        return
+                    if event.type == KEYDOWN:
+                        if event.key == K_ESCAPE:
+                            return
 
-            self.screen.blit(self.background, (0, 0))
-            self.background.blit(logo, logo.get_rect(center=bg_center))
-            pygame.display.flip()
+                # I blit everything onto the background rather than the screen
+                self.background.fill((10,10,10))
+                (player_surf, player_pos) = self.player.render()
+                print "pos: ", player_pos
+                self.background.blit(player_surf, player_pos)
+                self.screen.blit(self.background, (0, 0))
+                pygame.display.flip()
 
 if __name__ == '__main__':
     game = SpaceInvader().run()
