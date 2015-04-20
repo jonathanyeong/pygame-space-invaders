@@ -3,8 +3,10 @@ from pyvader import player
 
 class TestPlayer:
     def setup(self):
+        self.width = 100
+        self.height = 100
         print "Setup"
-        boundary = (10, 10)
+        boundary = (self.width, self.height)
         self.player = player.Player(boundary)
 
     def teardown(self):
@@ -34,6 +36,8 @@ class TestPlayer:
     def test_move_player_right(self):
         (prevX,y) = self.player.position()
         (x,y) = self.player.move_right()
+        print "prevx, ", prevX
+        print "x, ", x
         assert_true(x > prevX)
 
     def test_move_player_left(self):
@@ -42,22 +46,19 @@ class TestPlayer:
         assert_true(x < prevX)
 
     def test_player_right_boundary(self):
-        # Assume that the max width of the screen is 10
-        # This is decided in the setup phase
-        boundary = 10
-        for i in range(0, 20):
+        boundary = self.width
+        for i in range(0, self.width):
             (x,y) = self.player.move_right()
     
         print "x pos: ", x
-        assert(x == boundary)
+        assert(x <= boundary)
 
     def test_player_left_boundary(self):
-        # Assume that the max width of the screen is 10
-        # This is decided in the setup phase
         boundary = 0
-        for i in range(0, 20):
+        print "player pos: ", self.player.position()
+        for i in range(0, self.width):
             (x,y) = self.player.move_left()
     
         print "x pos: ", x
-        assert(x == boundary)
+        assert(x >= -self.player.get_speed())
 

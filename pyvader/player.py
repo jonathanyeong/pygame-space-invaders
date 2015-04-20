@@ -29,8 +29,10 @@ class Player(object):
         return (self._currX, self._currY)
 
     def move_right(self):
+        print "move_right"
         sprite_width = self._sprite.get_rect().width
         if (self._currX < (self._boundary - sprite_width*1.5)):
+            print "is moving"
             self._currX += self._speed
         return self.position()
 
@@ -41,3 +43,7 @@ class Player(object):
 
     def render(self):
         return self._sprite, self.position()
+
+    # For testing purposes
+    def get_speed(self):
+        return self._speed
