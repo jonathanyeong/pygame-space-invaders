@@ -3,11 +3,16 @@ import pygame
 class Player(object):
     def __init__(self, (screen_x, screen_y)):
         self._sprite = pygame.image.load("pyvader/assets/images/player_ship.png")
+        # Probably need to resize based on screen dimensions
+        # Have a break point for scaling
+        # if screen_x > some number: Do this scaling
+        # Otherwise: Do this scaling
+        self._sprite = pygame.transform.scale(self._sprite, (26, 16))
         self._lives = 3
-        # Player can only move on X axis
         # Player starts in the middle of the screen
         self._currX = screen_x/2
-        self._currY = screen_y - 100
+        margin = 10  # Arbitrary number
+        self._currY = screen_y - self._sprite.get_rect().height - margin
         self._speed = 1  # Some arbitrary speed of movement
         self._boundary = screen_x 
 
