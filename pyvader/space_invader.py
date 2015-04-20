@@ -3,6 +3,7 @@
 import os
 import sys
 import pygame
+import player
 from IPython import embed
 from pygame.locals import *
 
@@ -19,6 +20,10 @@ class SpaceInvader(object):
         self.background = self.background.convert()
         self.background.fill((10, 10, 10))
 
+        # Init player
+        (max_width, max_height) = self.screen.get_size()
+        # We need to take into account the size of the player sprite.
+        self.player = player.Player((max_width, max_height))
         self.font = pygame.font.Font(None, 42)  # Init some font object
 
     def draw_text(self, render_text, pos):
