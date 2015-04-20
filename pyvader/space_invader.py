@@ -93,11 +93,14 @@ class SpaceInvader(object):
                     self.player.move_right()
                 if keys[K_a]:
                     self.player.move_left()
+                if keys[K_SPACE]:
+                    print "fire"
+                    self.player.fire()
                 # I blit everything onto the background rather than the screen
                 self.background.fill((10,10,10))
-                (player_surf, player_pos) = self.player.render()
-                self.background.blit(player_surf, player_pos)
+                player_layer = self.player.render(self.background)
                 self.screen.blit(self.background, (0, 0))
+                self.screen.blit(player_layer, (0, 0))
                 pygame.display.flip()
 
 if __name__ == '__main__':
