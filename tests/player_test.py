@@ -4,7 +4,7 @@ from pyvader import player
 class TestPlayer:
     def setup(self):
         print "Setup"
-        boundary = 10
+        boundary = (10, 10)
         self.player = player.Player(boundary)
 
     def teardown(self):
@@ -32,13 +32,13 @@ class TestPlayer:
         assert_not_equal(self.player.position(), None)
     
     def test_move_player_right(self):
-        prevX = self.player.position()
-        x = self.player.move_right()
+        (prevX,y) = self.player.position()
+        (x,y) = self.player.move_right()
         assert_true(x > prevX)
 
     def test_move_player_left(self):
-        prevX = self.player.position()
-        x = self.player.move_left()
+        (prevX,y) = self.player.position()
+        (x,y) = self.player.move_left()
         assert_true(x < prevX)
 
     def test_player_right_boundary(self):
@@ -46,7 +46,7 @@ class TestPlayer:
         # This is decided in the setup phase
         boundary = 10
         for i in range(0, 20):
-            x = self.player.move_right()
+            (x,y) = self.player.move_right()
     
         print "x pos: ", x
         assert(x == boundary)
@@ -56,7 +56,7 @@ class TestPlayer:
         # This is decided in the setup phase
         boundary = 0
         for i in range(0, 20):
-            x = self.player.move_left()
+            (x,y) = self.player.move_left()
     
         print "x pos: ", x
         assert(x == boundary)
