@@ -2,14 +2,16 @@ import pygame
 import thread
 import fps
 
+
 class Player(object):
     def __init__(self, (screen_x, screen_y)):
         self.player_sprite = pygame.image.load("pyvader/assets/images/player_ship.png")
         self.missile_sprite = pygame.image.load("pyvader/assets/images/missile.png")
         # Sprite manipulation
-        self.player_sprite = pygame.transform.scale(self.player_sprite, (26, 16))
+        self.player_sprite = pygame.transform.scale(self.player_sprite,
+                                                    (26, 16))
         self.missile_sprite = pygame.transform.scale(self.missile_sprite,
-                                                      (4, 10))
+                                                     (4, 10))
         # Other properties
         self.screen_width = screen_x
         self.screen_height = screen_y
@@ -35,7 +37,7 @@ class Player(object):
 
     def fire_thread(self):
         clock = fps.Fps()
-        while (self.is_firing == True) and (-1*(self.missile_ypos) < 0):
+        while (self.is_firing is True) and (-1*(self.missile_ypos) < 0):
             self.missile_ypos -= self.missile_speed
             clock.tick()
 
@@ -44,7 +46,7 @@ class Player(object):
         self.missile_ypos = self.currY
 
     def fire(self):
-        if self.is_firing != True:
+        if self.is_firing is not True:
             # Update missile x, y before starting thread
             self.missile_xpos = self.currX + (self.player_sprite.get_width() / 2)
             self.missile_ypos = self.currY
@@ -70,10 +72,10 @@ class Player(object):
 
     def render(self, background):
         background.blit(self.player_sprite, self.position())
-        if self.is_firing == True:
+        if self.is_firing is True:
             background.blit(self.missile_sprite, (self.missile_xpos,
-                                              self.missile_ypos))
-        return background 
+                                                  self.missile_ypos))
+        return background
 
     # For testing purposes
     def get_speed(self):
