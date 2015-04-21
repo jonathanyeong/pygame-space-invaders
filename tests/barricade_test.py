@@ -28,3 +28,13 @@ class TestBarricade:
         current_life = self.barricade.lives_for_section(index)
         assert_true(initial_life > current_life, "Section should take damage")
 
+    def test_destroy_section(self):
+        for i in range(0, 4):
+            self.barricade.damage_section(0)
+        assert_true(self.barricade.is_section_destroyed(0))
+
+    def test_destroy_barricade(self):
+        for i in range(0, 10):
+            for j in range(0, 4):
+                self.barricade.damage_section(i)
+        assert_true(self.barricade.is_destroyed())
