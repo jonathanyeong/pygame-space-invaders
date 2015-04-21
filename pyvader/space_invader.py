@@ -15,7 +15,7 @@ class SpaceInvader(object):
         self.screen = pygame.display.set_mode((600, 480), DOUBLEBUF)
         pygame.display.set_caption("PyGame Space Invaders clone")
         pygame.mouse.set_visible(0)
-        pygame.key.set_repeat(10,10)
+        pygame.key.set_repeat(10, 10)
 
         # Fill background
         self.background = pygame.Surface(self.screen.get_size())
@@ -62,10 +62,10 @@ class SpaceInvader(object):
         bg_center = self.background.get_rect().center
         # Event loop
         while 1:
-            if START_GAME == False:
+            if START_GAME is False:
                 self.main_menu_text()
                 logo = pygame.image.load("pyvader/assets/images/ClearLogo.png")
-            
+
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         return
@@ -81,7 +81,7 @@ class SpaceInvader(object):
                 self.background.blit(logo, logo.get_rect(center=bg_center))
                 self.screen.blit(self.background, (0, 0))
                 pygame.display.flip()
-            elif START_GAME == True:
+            elif START_GAME is True:
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         return
@@ -96,7 +96,7 @@ class SpaceInvader(object):
                 if keys[K_SPACE]:
                     self.player.fire()
                 # I blit everything onto the background rather than the screen
-                self.background.fill((10,10,10))
+                self.background.fill((10, 10, 10))
                 player_layer = self.player.render(self.background)
                 self.screen.blit(self.background, (0, 0))
                 self.screen.blit(player_layer, (0, 0))
