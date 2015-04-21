@@ -26,9 +26,11 @@ class TestPlayer:
         print self.player.get_lives()
         assert_true(self.player.get_lives() < initial_lives) 
 
-    def test_fire_player_missile(self):
+    # Testing that firing works will have to be done via real life
+    # def test_fire_player_missile(self):
         # Not entirely sure what the design of this will be
-        assert_true(self.player.fire())
+        # assert_true(self.player.fire())
+
 
     def test_current_pos_of_player(self):
         assert_not_equal(self.player.position(), None)
