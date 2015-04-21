@@ -1,5 +1,6 @@
 import pygame
 import thread
+import fps
 
 class Player(object):
     def __init__(self, (screen_x, screen_y)):
@@ -29,8 +30,10 @@ class Player(object):
         return self._lives
 
     def fire_thread(self):
+        clock = fps.Fps()
         while (self._is_firing == True) and (-1*(self._missile_ypos) < 0):
             self._missile_ypos -= self._missile_speed
+            clock.tick()
 
         self._is_firing = False
         self._missile_xpos = self._currX + (self._sprite.get_width() / 2)

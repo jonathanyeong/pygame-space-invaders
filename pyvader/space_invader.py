@@ -94,7 +94,6 @@ class SpaceInvader(object):
                 if keys[K_a]:
                     self.player.move_left()
                 if keys[K_SPACE]:
-                    print "fire"
                     self.player.fire()
                 # I blit everything onto the background rather than the screen
                 self.background.fill((10,10,10))
