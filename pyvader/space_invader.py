@@ -12,7 +12,7 @@ class SpaceInvader(object):
     def __init__(self):
         pygame.init()
         # Initialise screen
-        self.screen = pygame.display.set_mode((600, 480), DOUBLEBUF)
+        self.screen = pygame.display.set_mode((0,0), pygame.DOUBLEBUF | pygame.FULLSCREEN)
         pygame.display.set_caption("PyGame Space Invaders clone")
         pygame.mouse.set_visible(0)
         pygame.key.set_repeat(10, 10)

@@ -8,10 +8,14 @@ class Player(object):
         self.player_sprite = pygame.image.load("pyvader/assets/images/player_ship.png")
         self.missile_sprite = pygame.image.load("pyvader/assets/images/missile.png")
         # Sprite manipulation
+        # Ratio between the player is 1.6
+        print "x: %d, y: %d" % (screen_x, screen_y)
+        player_width = int(screen_x*0.02)
+        player_height = int(screen_y*0.02)
         self.player_sprite = pygame.transform.scale(self.player_sprite,
-                                                    (26, 16))
+                                                    (player_width, player_height))
         self.missile_sprite = pygame.transform.scale(self.missile_sprite,
-                                                     (4, 10))
+                                                     (int(player_width*0.1), int(player_height*0.7)))
         # Other properties
         self.screen_width = screen_x
         self.screen_height = screen_y
@@ -24,12 +28,12 @@ class Player(object):
         margin = 10  # Arbitrary number
         self.currY = self.screen_height - self.player_sprite.get_rect().height - margin
         self.lives = 3
-        self.speed = 15  # Some arbitrary speed of movement
+        self.speed = 100  # Some arbitrary speed of movement
 
     def __initial_missile_properties(self):
         self.missile_xpos = self.currX + (self.player_sprite.get_width() / 2)
         self.missile_ypos = self.currY
-        self.missile_speed = 6
+        self.missile_speed = 60
         self.is_firing = False
 
     def get_lives(self):
