@@ -2,6 +2,9 @@ import pygame
 
 class Barricade(object):
     def __init__(self):
+        self.barricade_sprite = pygame.image.load("pyvader/assets/images/barricade.png")
+        self.barricade_sprite = pygame.transform.scale(self.barricade_sprite,
+                                                        (50, 35))
         # List of sections with lives
         lives_for_section = 4
         num_sections = 10
@@ -32,3 +35,7 @@ class Barricade(object):
         if (num_sections_destroyed == self.num_sections()):
             return True
         return False
+    
+    def render(self, background, position):
+        background.blit(self.barricade_sprite, position)
+        return background

@@ -1,9 +1,9 @@
 #!/usr/bin/python
-
 import os
 import sys
 import pygame
 import player
+import barricade
 from IPython import embed
 from pygame.locals import *
 
@@ -26,6 +26,7 @@ class SpaceInvader(object):
         (max_width, max_height) = self.screen.get_size()
         # We need to take into account the size of the player sprite.
         self.player = player.Player((max_width, max_height))
+        self.barricade = barricade.Barricade()
         self.font = pygame.font.Font(None, 42)  # Init some font object
 
     def draw_text(self, render_text, pos):
@@ -98,6 +99,7 @@ class SpaceInvader(object):
                 # I blit everything onto the background rather than the screen
                 self.background.fill((10, 10, 10))
                 player_layer = self.player.render(self.background)
+                barricade_layer = self.barricade.render(self.background, (300, 300))
                 self.screen.blit(self.background, (0, 0))
                 self.screen.blit(player_layer, (0, 0))
                 pygame.display.flip()
