@@ -28,12 +28,12 @@ class Player(object):
         margin = 10  # Arbitrary number
         self.currY = self.screen_height - self.player_sprite.get_rect().height - margin
         self.lives = 3
-        self.speed = 100  # Some arbitrary speed of movement
+        self.speed = 10  # Some arbitrary speed of movement
 
     def __initial_missile_properties(self):
         self.missile_xpos = self.currX + (self.player_sprite.get_width() / 2)
         self.missile_ypos = self.currY
-        self.missile_speed = 60
+        self.missile_speed = 6
         self.is_firing = False
 
     def get_lives(self):
@@ -56,6 +56,7 @@ class Player(object):
             self.missile_ypos = self.currY
             self.is_firing = True
             thread.start_new_thread(self.fire_thread, ())
+            return self.missile_sprite
 
     def take_damage(self):
         self.lives -= 1

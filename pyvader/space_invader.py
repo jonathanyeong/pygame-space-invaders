@@ -55,6 +55,15 @@ class SpaceInvader(object):
                                                      self.background.get_rect().midbottom)
         self.background.blit(instruction_text, textpos)
 
+    def resize_screen(self):
+        self.screen = pygame.display.set_mode((800,680),pygame.DOUBLEBUF) 
+        self.background = pygame.Surface(self.screen.get_size())
+        self.background = self.background.convert()
+        self.background.fill((10, 10, 10))
+        (max_width, max_height) = self.screen.get_size()
+        # We need to take into account the size of the player sprite.
+        self.player = player.Player((max_width, max_height))
+
     def run(self):
         # Worry about FPS tick later
         START_GAME = False  # ie Main Menu
@@ -71,6 +80,8 @@ class SpaceInvader(object):
                     if event.type == QUIT:
                         return
                     if event.type == KEYDOWN:
+                        if event.key == K_SLASH:
+                            self.resize_screen()
                         if event.key == K_ESCAPE:
                             return
                         if event.key == K_b:
@@ -83,6 +94,8 @@ class SpaceInvader(object):
                 self.screen.blit(self.background, (0, 0))
                 pygame.display.flip()
             elif START_GAME is True:
+                missile_surf = None
+
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         return
@@ -95,7 +108,8 @@ class SpaceInvader(object):
                 if keys[K_a]:
                     self.player.move_left()
                 if keys[K_SPACE]:
-                    self.player.fire()
+                    missile_surf = self.player.fire()
+
                 # I blit everything onto the background rather than the screen
                 self.background.fill((10, 10, 10))
                 player_layer = self.player.render(self.background)
