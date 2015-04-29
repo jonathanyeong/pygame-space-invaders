@@ -1,9 +1,9 @@
 #!/usr/bin/python
-
 import os
 import sys
 import pygame
 import player
+import barricade
 from IPython import embed
 from pygame.locals import *
 
@@ -12,7 +12,7 @@ class SpaceInvader(object):
     def __init__(self):
         pygame.init()
         # Initialise screen
-        self.screen = pygame.display.set_mode((600, 480), DOUBLEBUF)
+        self.screen = pygame.display.set_mode((0,0), pygame.DOUBLEBUF | pygame.FULLSCREEN)
         pygame.display.set_caption("PyGame Space Invaders clone")
         pygame.mouse.set_visible(0)
         pygame.key.set_repeat(10, 10)
@@ -26,6 +26,7 @@ class SpaceInvader(object):
         (max_width, max_height) = self.screen.get_size()
         # We need to take into account the size of the player sprite.
         self.player = player.Player((max_width, max_height))
+        self.barricade = barricade.Barricade()
         self.font = pygame.font.Font(None, 42)  # Init some font object
 
     def draw_text(self, render_text, pos):
@@ -54,6 +55,15 @@ class SpaceInvader(object):
                                                      self.background.get_rect().midbottom)
         self.background.blit(instruction_text, textpos)
 
+    def resize_screen(self):
+        self.screen = pygame.display.set_mode((800,680),pygame.DOUBLEBUF) 
+        self.background = pygame.Surface(self.screen.get_size())
+        self.background = self.background.convert()
+        self.background.fill((10, 10, 10))
+        (max_width, max_height) = self.screen.get_size()
+        # We need to take into account the size of the player sprite.
+        self.player = player.Player((max_width, max_height))
+
     def run(self):
         # Worry about FPS tick later
         START_GAME = False  # ie Main Menu
@@ -70,6 +80,8 @@ class SpaceInvader(object):
                     if event.type == QUIT:
                         return
                     if event.type == KEYDOWN:
+                        if event.key == K_SLASH:
+                            self.resize_screen()
                         if event.key == K_ESCAPE:
                             return
                         if event.key == K_b:
@@ -82,6 +94,8 @@ class SpaceInvader(object):
                 self.screen.blit(self.background, (0, 0))
                 pygame.display.flip()
             elif START_GAME is True:
+                missile_surf = None
+
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         return
@@ -94,10 +108,17 @@ class SpaceInvader(object):
                 if keys[K_a]:
                     self.player.move_left()
                 if keys[K_SPACE]:
-                    self.player.fire()
+                    missile_surf = self.player.fire()
+
                 # I blit everything onto the background rather than the screen
                 self.background.fill((10, 10, 10))
                 player_layer = self.player.render(self.background)
+                screen_width = self.background.get_rect().width
+                screen_height = self.background.get_rect().height
+                for x in range(1, 5):
+                    quarter_width = screen_width/4
+                    fifth_height = screen_height/5
+                    barricade_layer = self.barricade.render(self.background, (quarter_width*x, 4*fifth_height))
                 self.screen.blit(self.background, (0, 0))
                 self.screen.blit(player_layer, (0, 0))
                 pygame.display.flip()
