@@ -3,6 +3,7 @@ import os
 import sys
 import pygame
 import player
+import fps
 import barricade
 from IPython import embed
 from pygame.locals import *
@@ -23,6 +24,8 @@ class SpaceInvader(object):
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill((10, 10, 10))
+
+        self.game_clock = fps.Fps()
 
         # Init player
         (max_width, max_height) = self.screen.get_size()
@@ -132,6 +135,7 @@ class SpaceInvader(object):
                 self.screen.blit(self.background, (0, 0))
                 self.screen.blit(player_layer, (0, 0))
                 pygame.display.flip()
+                self.game_clock.tick()
 
     def quit_game(self):
         pygame.quit()
