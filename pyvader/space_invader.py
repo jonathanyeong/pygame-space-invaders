@@ -113,7 +113,12 @@ class SpaceInvader(object):
                 # I blit everything onto the background rather than the screen
                 self.background.fill((10, 10, 10))
                 player_layer = self.player.render(self.background)
-                barricade_layer = self.barricade.render(self.background, (300, 300))
+                screen_width = self.background.get_rect().width
+                screen_height = self.background.get_rect().height
+                for x in range(1, 5):
+                    quarter_width = screen_width/4
+                    fifth_height = screen_height/5
+                    barricade_layer = self.barricade.render(self.background, (quarter_width*x, 4*fifth_height))
                 self.screen.blit(self.background, (0, 0))
                 self.screen.blit(player_layer, (0, 0))
                 pygame.display.flip()
