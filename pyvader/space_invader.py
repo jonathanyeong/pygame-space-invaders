@@ -27,7 +27,7 @@ class SpaceInvader(object):
         # Init player
         (max_width, max_height) = self.screen.get_size()
         # We need to take into account the size of the player sprite.
-        self.player = player.Player((max_width, max_height))
+        self.player = player.Player(max_width, max_height)
         self.barricade = barricade.Barricade()
         self.font = pygame.font.Font(None, 42)  # Init some font object
 
@@ -70,7 +70,8 @@ class SpaceInvader(object):
         self.background.fill((10, 10, 10))
         (max_width, max_height) = self.screen.get_size()
         # We need to take into account the size of the player sprite.
-        self.player = player.Player((max_width, max_height))
+        (scale_x,scale_y) = self.get_scaling()
+        self.player = player.Player(max_width, max_height, scale_x, scale_y)
 
     def run(self):
         # Worry about FPS tick later
