@@ -17,7 +17,6 @@ class SpaceInvader(object):
         pygame.init()
         self.video_screen = video.Video()
         # Initialise screen
-        #self.screen = pygame.display.set_mode((INITIAL_WIDTH, INITIAL_HEIGHT), DOUBLEBUF | RESIZABLE)
         self.screen = self.video_screen.set_display(INITIAL_WIDTH, INITIAL_HEIGHT, False)
         pygame.mouse.set_visible(0)
         pygame.key.set_repeat(10, 10)
@@ -35,12 +34,6 @@ class SpaceInvader(object):
         self.player = player.Player(max_width, max_height)
         self.barricade = barricade.Barricade()
         self.font = pygame.font.Font(None, 42)  # Init some font object
-
-    def get_scaling(self):
-        (screen_width, screen_height) = self.screen.get_size()
-        scale_x = float(screen_width)/INITIAL_WIDTH
-        scale_y = float(screen_height)/INITIAL_HEIGHT
-        return (scale_x, scale_y)
 
     def draw_text(self, render_text, pos):
         text = self.font.render(render_text, 1, (250, 250, 250))
@@ -67,16 +60,6 @@ class SpaceInvader(object):
         (instruction_text, textpos) = self.draw_text("Press B to start",
                                                      self.background.get_rect().midbottom)
         self.background.blit(instruction_text, textpos)
-
-    def resize_screen(self):
-        [size] = pygame.display.list_modes()[:1]
-        self.screen = pygame.display.set_mode(size, DOUBLEBUF | FULLSCREEN) 
-        self.background = pygame.Surface(self.screen.get_size())
-        self.background.fill((10, 10, 10))
-        (max_width, max_height) = self.screen.get_size()
-        # We need to take into account the size of the player sprite.
-        (scale_x,scale_y) = self.get_scaling()
-        self.player = player.Player(max_width, max_height, scale_x, scale_y)
 
     def run(self):
         # Worry about FPS tick later

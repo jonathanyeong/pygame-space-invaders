@@ -9,9 +9,9 @@ class Player(object):
         self.missile_sprite = pygame.image.load("pyvader/assets/images/missile.png")
         # Sprite manipulation
         self.player_sprite = pygame.transform.scale(self.player_sprite,
-                                                    (int(45*scale_x), int(28*scale_y)))
+                                                    (26, 16))
         self.missile_sprite = pygame.transform.scale(self.missile_sprite,
-                                                     (int(5*scale_x), int(14*scale_y)))
+                                                     (4, 10))
         # Other properties
         self.screen_width = screen_x
         self.screen_height = screen_y
