@@ -36,9 +36,8 @@ class Barricade(object):
             return True
         return False
     
-    def render(self, background, position):
-        background.blit(self.barricade_sprite, position)
-        return background
+    def render(self):
+        return self.barricade_sprite
 
     def get_barricade_surf(self):
         return self.barricade_sprite

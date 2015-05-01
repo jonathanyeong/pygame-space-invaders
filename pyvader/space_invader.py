@@ -3,6 +3,7 @@ import os
 import sys
 import pygame
 import player
+import video
 import fps
 import barricade
 from IPython import embed
@@ -14,9 +15,10 @@ INITIAL_HEIGHT=720
 class SpaceInvader(object):
     def __init__(self):
         pygame.init()
+        self.video_screen = video.Video()
         # Initialise screen
-        self.screen = pygame.display.set_mode((INITIAL_WIDTH, INITIAL_HEIGHT), DOUBLEBUF | RESIZABLE)
-        pygame.display.set_caption("PyGame Space Invaders clone")
+        #self.screen = pygame.display.set_mode((INITIAL_WIDTH, INITIAL_HEIGHT), DOUBLEBUF | RESIZABLE)
+        self.screen = self.video_screen.set_display(INITIAL_WIDTH, INITIAL_HEIGHT, False)
         pygame.mouse.set_visible(0)
         pygame.key.set_repeat(10, 10)
 
@@ -93,9 +95,7 @@ class SpaceInvader(object):
                         self.quit_game()
                     if event.type == KEYDOWN:
                         if event.key == K_SLASH:
-                            self.resize_screen()
-                            bg_center = self.background.get_rect().center
-                            print "Scaling is: ", self.get_scaling()
+                            self.video_screen.set_display(INITIAL_WIDTH, INITIAL_HEIGHT, True)
                         if event.key == K_ESCAPE:
                             self.quit_game()
                         if event.key == K_b:
@@ -126,12 +126,6 @@ class SpaceInvader(object):
                 # I blit everything onto the background rather than the screen
                 self.background.fill((10, 10, 10))
                 player_layer = self.player.render(self.background)
-                screen_width = self.background.get_rect().width
-                screen_height = self.background.get_rect().height
-                for x in range(1, 5):
-                    quarter_width = screen_width/4
-                    fifth_height = screen_height/5
-                    barricade_layer = self.barricade.render(self.background, (quarter_width*x, 4*fifth_height))
                 self.screen.blit(self.background, (0, 0))
                 self.screen.blit(player_layer, (0, 0))
                 pygame.display.flip()
