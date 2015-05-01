@@ -3,17 +3,21 @@ import os
 import sys
 import pygame
 import player
+import video
+import fps
 import barricade
 from IPython import embed
 from pygame.locals import *
 
 
+INITIAL_WIDTH=1080
+INITIAL_HEIGHT=720
 class SpaceInvader(object):
     def __init__(self):
         pygame.init()
+        self.video_screen = video.Video()
         # Initialise screen
-        self.screen = pygame.display.set_mode((0,0), pygame.DOUBLEBUF | pygame.FULLSCREEN)
-        pygame.display.set_caption("PyGame Space Invaders clone")
+        self.screen = self.video_screen.set_display(INITIAL_WIDTH, INITIAL_HEIGHT, False)
         pygame.mouse.set_visible(0)
         pygame.key.set_repeat(10, 10)
 
@@ -22,10 +26,12 @@ class SpaceInvader(object):
         self.background = self.background.convert()
         self.background.fill((10, 10, 10))
 
+        self.game_clock = fps.Fps()
+
         # Init player
         (max_width, max_height) = self.screen.get_size()
         # We need to take into account the size of the player sprite.
-        self.player = player.Player((max_width, max_height))
+        self.player = player.Player(max_width, max_height)
         self.barricade = barricade.Barricade()
         self.font = pygame.font.Font(None, 42)  # Init some font object
 
@@ -55,21 +61,12 @@ class SpaceInvader(object):
                                                      self.background.get_rect().midbottom)
         self.background.blit(instruction_text, textpos)
 
-    def resize_screen(self):
-        self.screen = pygame.display.set_mode((800,680),pygame.DOUBLEBUF) 
-        self.background = pygame.Surface(self.screen.get_size())
-        self.background = self.background.convert()
-        self.background.fill((10, 10, 10))
-        (max_width, max_height) = self.screen.get_size()
-        # We need to take into account the size of the player sprite.
-        self.player = player.Player((max_width, max_height))
-
     def run(self):
         # Worry about FPS tick later
         START_GAME = False  # ie Main Menu
+        bg_center = self.background.get_rect().center
         self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
-        bg_center = self.background.get_rect().center
         # Event loop
         while 1:
             if START_GAME is False:
@@ -78,18 +75,17 @@ class SpaceInvader(object):
 
                 for event in pygame.event.get():
                     if event.type == QUIT:
-                        return
+                        self.quit_game()
                     if event.type == KEYDOWN:
                         if event.key == K_SLASH:
-                            self.resize_screen()
+                            self.video_screen.set_display(INITIAL_WIDTH, INITIAL_HEIGHT, True)
                         if event.key == K_ESCAPE:
-                            return
+                            self.quit_game()
                         if event.key == K_b:
                             print "start game"
                             START_GAME = True
                             break
                         # Option to load full screen as well
-
                 self.background.blit(logo, logo.get_rect(center=bg_center))
                 self.screen.blit(self.background, (0, 0))
                 pygame.display.flip()
@@ -98,10 +94,10 @@ class SpaceInvader(object):
 
                 for event in pygame.event.get():
                     if event.type == QUIT:
-                        return
+                        self.quit_game()
                     if event.type == KEYDOWN:
                         if event.key == K_ESCAPE:
-                            return
+                            self.quit_game()
                 keys = pygame.key.get_pressed()
                 if keys[K_d]:
                     self.player.move_right()
@@ -113,15 +109,15 @@ class SpaceInvader(object):
                 # I blit everything onto the background rather than the screen
                 self.background.fill((10, 10, 10))
                 player_layer = self.player.render(self.background)
-                screen_width = self.background.get_rect().width
-                screen_height = self.background.get_rect().height
-                for x in range(1, 5):
-                    quarter_width = screen_width/4
-                    fifth_height = screen_height/5
-                    barricade_layer = self.barricade.render(self.background, (quarter_width*x, 4*fifth_height))
                 self.screen.blit(self.background, (0, 0))
                 self.screen.blit(player_layer, (0, 0))
                 pygame.display.flip()
+                self.game_clock.tick()
+
+    def quit_game(self):
+        pygame.quit()
+        sys.exit()
+
 
 if __name__ == '__main__':
     game = SpaceInvader().run()

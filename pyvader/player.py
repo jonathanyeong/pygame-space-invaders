@@ -4,36 +4,32 @@ import fps
 
 
 class Player(object):
-    def __init__(self, (screen_x, screen_y)):
+    def __init__(self, screen_x, screen_y, scale_x=1.0, scale_y=1.0):
         self.player_sprite = pygame.image.load("pyvader/assets/images/player_ship.png")
         self.missile_sprite = pygame.image.load("pyvader/assets/images/missile.png")
         # Sprite manipulation
-        # Ratio between the player is 1.6
-        print "x: %d, y: %d" % (screen_x, screen_y)
-        player_width = int(screen_x*0.02)
-        player_height = int(screen_y*0.02)
         self.player_sprite = pygame.transform.scale(self.player_sprite,
-                                                    (player_width, player_height))
+                                                    (26, 16))
         self.missile_sprite = pygame.transform.scale(self.missile_sprite,
-                                                     (int(player_width*0.1), int(player_height*0.7)))
+                                                     (4, 10))
         # Other properties
         self.screen_width = screen_x
         self.screen_height = screen_y
         # Player and missile properties
-        self.__initial_player_properties()
-        self.__initial_missile_properties()
+        self.__initial_player_properties(scale_x)
+        self.__initial_missile_properties(scale_y)
 
-    def __initial_player_properties(self):
+    def __initial_player_properties(self, scale_x):
         self.currX = self.screen_width/2
         margin = 10  # Arbitrary number
         self.currY = self.screen_height - self.player_sprite.get_rect().height - margin
         self.lives = 3
-        self.speed = 10  # Some arbitrary speed of movement
+        self.speed = 10*scale_x  # Some arbitrary speed of movement
 
-    def __initial_missile_properties(self):
+    def __initial_missile_properties(self, scale_y):
         self.missile_xpos = self.currX + (self.player_sprite.get_width() / 2)
         self.missile_ypos = self.currY
-        self.missile_speed = 6
+        self.missile_speed = 6*scale_y
         self.is_firing = False
 
     def get_lives(self):
