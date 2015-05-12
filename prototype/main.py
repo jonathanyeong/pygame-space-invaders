@@ -3,8 +3,30 @@ import os
 import sys
 from pygame.locals import *
 
-class Player:
+class Alien(pygame.sprite.Sprite):
     def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.images = []
+        self.frame = 0
+        self.stop_threads = False
+        frame_1 = pygame.image.load("assets/images/alien_1a.png")
+        frame_1 = pygame.transform.scale(frame_1, (27, 20))
+        frame_2 = pygame.image.load("assets/images/alien_1b.png")
+        frame_2 = pygame.transform.scale(frame_2, (27, 20))
+        self.images.append(frame_1)
+        self.images.append(frame_2)
+        self.image = self.images[self.frame]
+        self.rect = pygame.Rect(5, 5, 27, 20)
+
+    def update(self):
+        self.frame += 1
+        if self.frame >= len(self.images):
+            self.frame = 0
+        self.image = self.images[self.frame]
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
         self.sprite = pygame.image.load("assets/images/player_ship.png")
         self.sprite = pygame.transform.scale(self.sprite, (26, 16))
         self.speed = 10
@@ -44,6 +66,8 @@ class Pyvader:
         self.background = pygame.Surface(self.player.get_player_layer().get_size())
         self.background = self.background.convert()
         self.background.fill((10, 10, 10))
+        self.alien = Alien()
+        self.alien_group = pygame.sprite.Group(self.alien)
 
         self.run()
 
@@ -58,7 +82,6 @@ class Pyvader:
                         pygame.quit()
                         sys.exit()
 
-
             keys = pygame.key.get_pressed()
             if keys[K_d]:
                 self.player.move_right()
@@ -66,6 +89,8 @@ class Pyvader:
                 self.player.move_left()
            
             self.screen.fill((10,10,10))
+            self.alien_group.update()
+            self.alien_group.draw(self.screen)
             self.background.blit(self.player.get_player_layer(),
                                  (0,0))
             self.screen.blit(self.background, self.player.get_position())
