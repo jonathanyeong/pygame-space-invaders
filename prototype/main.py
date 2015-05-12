@@ -69,7 +69,10 @@ class Pyvader:
             self.background.blit(self.player.get_player_layer(),
                                  (0,0))
             self.screen.blit(self.background, self.player.get_position())
-            pygame.display.update()
+            (x,y) = self.player.get_position()
+            pygame.display.update(pygame.Rect(x, y, 
+                                              self.background.get_rect().width, 
+                                              self.background.get_rect().height))
 
 if __name__ == "__main__":
     pyvader = Pyvader()
