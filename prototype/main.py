@@ -37,10 +37,14 @@ class Pyvader:
         pygame.init()
         self.screen = pygame.display.set_mode((1080, 720), DOUBLEBUF)
         pygame.display.set_caption("Pygame Space Invader Prototype")
-        self.screen.fill((0,0,0))
+        self.screen.fill((10,10,10))
         self.player = Player()
         self.player.set_position(self.screen.get_rect().width, 
                                   self.screen.get_rect().height)
+        self.background = pygame.Surface(self.player.get_player_layer().get_size())
+        self.background = self.background.convert()
+        self.background.fill((10, 10, 10))
+
         self.run()
 
     def run(self):
@@ -57,23 +61,14 @@ class Pyvader:
 
             keys = pygame.key.get_pressed()
             if keys[K_d]:
-                (x, y) = self.player.get_position()
-                pRect = self.player.get_player_layer()
-                player_rect = pygame.Rect(x, y, pRect.get_rect().width, pRect.get_rect().height)
-                pygame.draw.rect(self.screen, (0,0,0), player_rect)
-                pygame.display.update(player_rect)
                 self.player.move_right()
             if keys[K_a]:
-                (x, y) = self.player.get_position()
-                pRect = self.player.get_player_layer()
-                player_rect = pygame.Rect(x, y, pRect.get_rect().width, pRect.get_rect().height)
-                pygame.draw.rect(self.screen, (0,0,0), player_rect)
-                pygame.display.update(player_rect)
                 self.player.move_left()
-            
-            (x, y) = self.player.get_position()
-            pRect = self.player.get_player_layer()
-            self.screen.blit(pRect, (x, y))
+           
+            self.screen.fill((10,10,10))
+            self.background.blit(self.player.get_player_layer(),
+                                 (0,0))
+            self.screen.blit(self.background, self.player.get_position())
             pygame.display.update()
 
 if __name__ == "__main__":
