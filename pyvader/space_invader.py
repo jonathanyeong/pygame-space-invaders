@@ -81,7 +81,7 @@ class SpaceInvader(object):
                             self.video_screen.set_display(INITIAL_WIDTH, INITIAL_HEIGHT, True)
                         if event.key == K_ESCAPE:
                             self.quit_game()
-                        if event.key == K_b:
+                        if event.key == K_RETURN:
                             print "start game"
                             START_GAME = True
                             break
@@ -99,11 +99,13 @@ class SpaceInvader(object):
                         if event.key == K_ESCAPE:
                             self.quit_game()
                 keys = pygame.key.get_pressed()
-                if keys[K_d]:
+                if keys[K_k]:
                     self.player.move_right()
-                if keys[K_a]:
+                if keys[K_d]:
                     self.player.move_left()
-                if keys[K_SPACE]:
+                if keys[K_u]:
+                    missile_surf = self.player.fire()
+                if keys[K_r]:
                     missile_surf = self.player.fire()
 
                 # I blit everything onto the background rather than the screen
