@@ -5,6 +5,9 @@ import os
 import sys
 from pygame.locals import *
 
+ALIEN_ROWS = 5
+ALIEN_COLUMNS = 11
+
 class Alien(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -48,7 +51,7 @@ class Alien(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
-        self.speed = 50  # Speed of alien movement
+        self.speed = 30  # Speed of alien movement
         self.vector = [1, 1]
         self.wait_time = 900
         self.time = pygame.time.get_ticks()
@@ -118,13 +121,34 @@ class Pyvader:
         sprite = pygame.transform.scale(sprite, (27, 20))
         Alien.image = sprite
 
+    # This should be elsewhere,
+    # Maybe its own class.
+    def alien_image_type(self, typeOfAlien):
+        if (typeOfAlien == 0):
+            sprite = pygame.image.load("assets/images/alien_1a.png")
+            sprite = pygame.transform.scale(sprite, (27, 20))
+            Alien.image = sprite
+        elif (typeOfAlien == 1):
+            sprite = pygame.image.load("assets/images/alien_1a.png")
+            sprite = pygame.transform.scale(sprite, (27, 20))
+            Alien.image = sprite
+        elif (typeOfAlien == 2):
+            sprite = pygame.image.load("assets/images/alien_1a.png")
+            sprite = pygame.transform.scale(sprite, (27, 20))
+            Alien.image = sprite
+
     def make_alien_wave(self, number):
-        for i in range(0, number):
-            alien = Alien()
-            alien.rect.x = 0
-            alien.rect.y = 0
-            self.alien_group.add(alien)
-            self.all_sprite_list.add(alien)
+        for row in range(ALIEN_ROWS):
+            for column in range(ALIEN_COLUMNS):
+                alien = Alien()
+                # 29 being the width of one alien
+                # 20 being the height of one alien
+                alien.rect.x = 10 + (
+                        column * (27 + 10))
+                alien.rect.y = 20 + (row * (
+                    20 + 10))
+                self.alien_group.add(alien)
+                self.all_sprite_list.add(alien)
 
     def make_player(self):
         self.player = Player()
@@ -183,12 +207,18 @@ class Pyvader:
         if GameState.shoot_bullet:
             self.make_bullet()
 
+    def collision_detection(self):
+        for z in pygame.sprite.groupcollide(
+                self.bullet_group, self.alien_group, True, True):
+            print "alien should die"
+
     def main_loop(self):
         self.make_player()
         self.make_alien_wave(1)
         while 1:
             GameState.alien_time = pygame.time.get_ticks()
             self.process_input()
+            self.collision_detection()
             self.update()
             self.render_screen()
 
