@@ -263,6 +263,10 @@ class Pyvader:
             self.make_bullet()
 
     def collision_detection(self):
+        if pygame.sprite.groupcollide(
+                self.player_group, self.missile_group, False, True):
+            print "player loses a life"
+
         for z in pygame.sprite.groupcollide(
                 self.bullet_group, self.alien_group, True, True):
             print "alien should die"
@@ -270,8 +274,7 @@ class Pyvader:
     def make_alien_missile(self):
         if len(self.alien_group):
             shoot = random.random()
-            print "shoot: ", shoot
-            if shoot <= 0.03:
+            if shoot <= 0.01:
                 shooter = random.choice([
                     alien for alien in self.alien_group])
                 missile = Missile()
@@ -281,7 +284,7 @@ class Pyvader:
                 missile.rect = missile.image.get_rect()
                 missile.rect.x = shooter.rect.x + 15
                 missile.rect.y = shooter.rect.y + 40
-                missile.speed = 10
+                missile.speed = 5
                 missile.vector = 1
                 self.missile_group.add(missile)
                 self.all_sprite_list.add(missile)
