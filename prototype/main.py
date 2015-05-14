@@ -122,6 +122,13 @@ class Missile(pygame.sprite.Sprite):
         if self.rect.y < 0 or self.rect.y > 720:
             self.kill()
 
+class Block(pygame.sprite.Sprite):
+    def __init__(self, color, (width, height)):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+
 class GameState:
     pass
 
@@ -144,6 +151,7 @@ class Pyvader:
     def init_sprite_groups(self):
         self.player_group = pygame.sprite.Group()
         self.bullet_group = pygame.sprite.Group()
+        self.barrier_group = pygame.sprite.Group()
         self.missile_group = pygame.sprite.Group()
         self.alien_group = pygame.sprite.Group()
         self.all_sprite_list = pygame.sprite.Group() 
@@ -236,6 +244,7 @@ class Pyvader:
         self.all_sprite_list.draw(self.screen)
         pygame.display.update()
         self.screen.blit(self.background, (0,0))
+        self.clock.tick(30)
 
     def make_bullet(self):
         # This fixes the issue where multiple bullets will keep firing
@@ -263,6 +272,11 @@ class Pyvader:
             self.make_bullet()
 
     def collision_detection(self):
+        pygame.sprite.groupcollide(
+                self.missile_group, self.barrier_group, True, True)
+        pygame.sprite.groupcollide(
+                self.bullet_group, self.barrier_group, True, True)
+
         if pygame.sprite.groupcollide(
                 self.player_group, self.missile_group, False, True):
             print "player loses a life"
@@ -289,8 +303,22 @@ class Pyvader:
                 self.missile_group.add(missile)
                 self.all_sprite_list.add(missile)
 
+    def make_barrier(self, columns, rows, spacer):
+        for row in range(rows):
+            for column in range(columns):
+                barrier = Block((5, 251, 5), (10, 10))
+                barrier.rect.x = 110 + (250 * spacer) + (column * 10)
+                barrier.rect.y = 600 + (row * 10)
+                self.barrier_group.add(barrier)
+                self.all_sprite_list.add(barrier)
+
+    def make_defenses(self):
+        for spacing, spacing in enumerate(xrange(4)):
+            self.make_barrier(9, 3, spacing)
+
     def main_loop(self):
         self.make_player()
+        self.make_defenses()
         while 1:
             GameState.alien_time = pygame.time.get_ticks()
             self.process_input()
@@ -298,7 +326,6 @@ class Pyvader:
             self.collision_detection()
             self.update()
             self.render_screen()
-            self.clock.tick(30)
 
 if __name__ == "__main__":
     pyvader = Pyvader()
