@@ -8,28 +8,6 @@ from pygame.locals import *
 ALIEN_ROWS = 5
 ALIEN_COLUMNS = 11
 
-class Alien(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.images = []
-        self.frame = 0
-        self.stop_threads = False
-        frame_1 = pygame.image.load("assets/images/alien_1a.png")
-        frame_1 = pygame.transform.scale(frame_1, (27, 20))
-        frame_2 = pygame.image.load("assets/images/alien_1b.png")
-        frame_2 = pygame.transform.scale(frame_2, (27, 20))
-        self.images.append(frame_1)
-        self.images.append(frame_2)
-        self.image = self.images[self.frame]
-        self.rect = pygame.Rect(5, 5, 27, 20)
-
-    def update(self):
-        self.frame += 1
-        if self.frame >= len(self.images):
-            self.frame = 0
-        self.image = self.images[self.frame]
-        time.sleep(0.3)
-
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -47,27 +25,87 @@ class Player(pygame.sprite.Sprite):
         elif self.rect.x > 1080 - 26:
             self.rect.x = 1080 - 26
 
+class AlienTwo(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.rect = self.image.get_rect()
+        self.speed = 30  # Speed of alien movement
+        self.vector = [1, 1]
+        self.has_moved = 0
+        self.wait_time = 700
+        self.time = pygame.time.get_ticks()
+
+    def update(self):
+        if GameState.alien_time - self.time > self.wait_time:
+            # width of alien?
+            #if self.rect.x >= 0 and self.rect.x <= 1080 - 26:
+            if self.has_moved < 22:
+                self.rect.x += self.vector[0] * self.speed
+                self.has_moved += 1
+            else:
+                # 20 being the row height?
+                self.rect.y += self.vector[1] * 20
+                #if self.rect.x > 0:
+                #    self.rect.x = 1080 - 26
+                #else:
+                #    self.rect.x = 0
+                self.has_moved = 0
+                self.vector[0] *= -1
+            self.time = GameState.alien_time
+
+class AlienThree(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.rect = self.image.get_rect()
+        self.speed = 30  # Speed of alien movement
+        self.vector = [1, 1]
+        self.has_moved = 0
+        self.wait_time = 700
+        self.time = pygame.time.get_ticks()
+
+    def update(self):
+        if GameState.alien_time - self.time > self.wait_time:
+            # width of alien?
+            #if self.rect.x >= 0 and self.rect.x <= 1080 - 26:
+            if self.has_moved < 22:
+                self.rect.x += self.vector[0] * self.speed
+                self.has_moved += 1
+            else:
+                self.rect.y += self.vector[1] * 20
+                self.has_moved = 0
+                # 20 being the row height?
+                #if self.rect.x > 0:
+                #    self.rect.x = 1080 - 26
+                #else:
+                #    self.rect.x = 0
+                self.vector[0] *= -1
+            self.time = GameState.alien_time
+
 class Alien(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
         self.speed = 30  # Speed of alien movement
         self.vector = [1, 1]
-        self.wait_time = 900
+        self.has_moved = 0
+        self.wait_time = 700
         self.time = pygame.time.get_ticks()
 
     def update(self):
         if GameState.alien_time - self.time > self.wait_time:
             # width of alien?
-            if self.rect.x >= 0 and self.rect.x <= 1080 - 26:
+            #if self.rect.x >= 0 and self.rect.x <= 1080 - 26:
+            if self.has_moved < 22:
                 self.rect.x += self.vector[0] * self.speed
+                self.has_moved += 1
             else:
                 # 20 being the row height?
                 self.rect.y += self.vector[1] * 20
-                if self.rect.x > 0:
-                    self.rect.x = 1080 - 26
-                else:
-                    self.rect.x = 0
+                #if self.rect.x > 0:
+                #    self.rect.x = 1080 - 26
+                #else:
+                #    self.rect.x = 0
+                self.has_moved = 0
                 self.vector[0] *= -1
             self.time = GameState.alien_time
 
@@ -99,6 +137,7 @@ class Pyvader:
         self.init_sprite_groups()
         self.init_player_sprite()
         self.init_alien_sprite()
+        self.make_alien_wave(1)
         self.init_gamestate()
 
     def init_sprite_groups(self):
@@ -120,35 +159,47 @@ class Pyvader:
         sprite = pygame.image.load("assets/images/alien_1a.png")
         sprite = pygame.transform.scale(sprite, (27, 20))
         Alien.image = sprite
+        sprite = pygame.image.load("assets/images/alien_2a.png")
+        sprite = pygame.transform.scale(sprite, (27, 20))
+        AlienTwo.image = sprite
+        sprite = pygame.image.load("assets/images/alien_3a.png")
+        sprite = pygame.transform.scale(sprite, (27, 20))
+        AlienThree.image = sprite
 
     # This should be elsewhere,
     # Maybe its own class.
     def alien_image_type(self, typeOfAlien):
         if (typeOfAlien == 0):
-            sprite = pygame.image.load("assets/images/alien_1a.png")
-            sprite = pygame.transform.scale(sprite, (27, 20))
-            Alien.image = sprite
+            alien = Alien()
         elif (typeOfAlien == 1):
-            sprite = pygame.image.load("assets/images/alien_1a.png")
-            sprite = pygame.transform.scale(sprite, (27, 20))
-            Alien.image = sprite
+            alien = AlienTwo()
         elif (typeOfAlien == 2):
-            sprite = pygame.image.load("assets/images/alien_1a.png")
-            sprite = pygame.transform.scale(sprite, (27, 20))
-            Alien.image = sprite
+            alien = AlienThree()
+
+        self.alien_group.add(alien)
+        self.all_sprite_list.add(alien)
+        return alien
 
     def make_alien_wave(self, number):
         for row in range(ALIEN_ROWS):
             for column in range(ALIEN_COLUMNS):
-                alien = Alien()
-                # 29 being the width of one alien
+                if row == 0:
+                    alien = self.alien_image_type(2)
+                elif row == 1 or row == 2:
+                    alien = self.alien_image_type(1)
+                else:
+                    alien = self.alien_image_type(0)
+
+                alien_width = 27
+                alien_height = 20
+                spacer = 10
+                # 27 being the width of one alien
                 # 20 being the height of one alien
-                alien.rect.x = 10 + (
-                        column * (27 + 10))
-                alien.rect.y = 20 + (row * (
-                    20 + 10))
-                self.alien_group.add(alien)
-                self.all_sprite_list.add(alien)
+                # 10 is a spacer
+                alien.rect.x = spacer + (
+                        column * (alien_width + spacer))
+                alien.rect.y = alien_height + (row * (
+                    alien_height + spacer))
 
     def make_player(self):
         self.player = Player()
@@ -214,7 +265,6 @@ class Pyvader:
 
     def main_loop(self):
         self.make_player()
-        self.make_alien_wave(1)
         while 1:
             GameState.alien_time = pygame.time.get_ticks()
             self.process_input()
