@@ -3,6 +3,7 @@ import time
 import thread
 import os
 import sys
+import random
 from pygame.locals import *
 
 ALIEN_ROWS = 5
@@ -143,6 +144,7 @@ class Pyvader:
     def init_sprite_groups(self):
         self.player_group = pygame.sprite.Group()
         self.bullet_group = pygame.sprite.Group()
+        self.missile_group = pygame.sprite.Group()
         self.alien_group = pygame.sprite.Group()
         self.all_sprite_list = pygame.sprite.Group() 
 
@@ -215,16 +217,18 @@ class Pyvader:
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     sys.exit()
+                if event.key == K_SLASH:
+                    self.screen = pygame.display.set_mode((1080, 720), DOUBLEBUF | FULLSCREEN)
 
         keys = pygame.key.get_pressed()
-        if keys[K_d]:
+        if keys[K_k]:
             GameState.vector = 1
-        elif keys[K_a]:
+        elif keys[K_d]:
             GameState.vector = -1
         else:
             GameState.vector = 0
 
-        if keys[K_SPACE]:
+        if keys[K_r] or keys[K_u]:
             GameState.shoot_bullet = True
 
 
@@ -252,7 +256,7 @@ class Pyvader:
 
     def update(self):
         for actor in [self.player_group, self.bullet_group,
-                      self.alien_group]:
+                      self.alien_group, self.missile_group]:
             for i in actor:
                 i.update()
         if GameState.shoot_bullet:
@@ -262,15 +266,36 @@ class Pyvader:
         for z in pygame.sprite.groupcollide(
                 self.bullet_group, self.alien_group, True, True):
             print "alien should die"
+    
+    def make_alien_missile(self):
+        if len(self.alien_group):
+            shoot = random.random()
+            print "shoot: ", shoot
+            if shoot <= 0.03:
+                shooter = random.choice([
+                    alien for alien in self.alien_group])
+                missile = Missile()
+                sprite = pygame.image.load("assets/images/missile.png")
+                sprite = pygame.transform.scale(sprite, (4, 10))
+                missile.image = sprite
+                missile.rect = missile.image.get_rect()
+                missile.rect.x = shooter.rect.x + 15
+                missile.rect.y = shooter.rect.y + 40
+                missile.speed = 10
+                missile.vector = 1
+                self.missile_group.add(missile)
+                self.all_sprite_list.add(missile)
 
     def main_loop(self):
         self.make_player()
         while 1:
             GameState.alien_time = pygame.time.get_ticks()
             self.process_input()
+            self.make_alien_missile()
             self.collision_detection()
             self.update()
             self.render_screen()
+            self.clock.tick(30)
 
 if __name__ == "__main__":
     pyvader = Pyvader()
