@@ -33,7 +33,7 @@ class AlienTwo(pygame.sprite.Sprite):
         self.speed = 30  # Speed of alien movement
         self.vector = [1, 1]
         self.has_moved = 0
-        self.wait_time = 700
+        self.wait_time = 2000
         self.time = pygame.time.get_ticks()
 
     def update(self):
@@ -61,7 +61,7 @@ class AlienThree(pygame.sprite.Sprite):
         self.speed = 30  # Speed of alien movement
         self.vector = [1, 1]
         self.has_moved = 0
-        self.wait_time = 700
+        self.wait_time = 2000
         self.time = pygame.time.get_ticks()
 
     def update(self):
@@ -89,7 +89,7 @@ class Alien(pygame.sprite.Sprite):
         self.speed = 30  # Speed of alien movement
         self.vector = [1, 1]
         self.has_moved = 0
-        self.wait_time = 700
+        self.wait_time = 2000
         self.time = pygame.time.get_ticks()
 
     def update(self):
@@ -145,8 +145,9 @@ class Pyvader:
         self.init_sprite_groups()
         self.init_player_sprite()
         self.init_alien_sprite()
-        self.make_alien_wave(1)
         self.init_gamestate()
+        self.font = pygame.font.Font(None, 42)
+        GameState.start_screen = True
 
     def init_sprite_groups(self):
         self.player_group = pygame.sprite.Group()
@@ -236,14 +237,20 @@ class Pyvader:
         else:
             GameState.vector = 0
 
+        if keys[K_RETURN]:
+            print "k return"
+            if GameState.start_screen:
+                GameState.start_screen = False
+
         if keys[K_r] or keys[K_u]:
             GameState.shoot_bullet = True
 
 
     def render_screen(self):
+        self.background.fill((10, 10, 10))
+        self.screen.blit(self.background, (0,0))
         self.all_sprite_list.draw(self.screen)
         pygame.display.update()
-        self.screen.blit(self.background, (0,0))
         self.clock.tick(30)
 
     def make_bullet(self):
@@ -316,16 +323,57 @@ class Pyvader:
         for spacing, spacing in enumerate(xrange(4)):
             self.make_barrier(9, 3, spacing)
 
+    def splash_screen(self):
+        while GameState.start_screen:
+            self.main_menu_text()
+            logo = pygame.image.load("assets/images/ClearLogo.png")
+            bg_center = self.background.get_rect().center
+            self.background.blit(logo, logo.get_rect(center=bg_center))
+            self.screen.blit(self.background, (0, 0))
+            pygame.display.update()
+            self.process_input()
+
+    def draw_text(self, render_text, pos):
+        text = self.font.render(render_text, 1, (250, 250, 250))
+        textpos = text.get_rect()
+        (x, y) = pos
+
+        if (y == 0):
+            # We know that this is at the top of the screen
+            textpos.midtop = pos
+        elif (y == self.background.get_rect().height):
+            # We know that this is the bottom of screen
+            textpos.midbottom = pos
+        else:
+            textpos.center = pos
+
+        return text, textpos
+
+    def main_menu_text(self):
+        # Display title text
+        (title_text, textpos) = self.draw_text("Space Invaders",
+                                               self.background.get_rect().midtop)
+        self.background.blit(title_text, textpos)
+        # Display instruction text
+        (instruction_text, textpos) = self.draw_text("Press B to start",
+                                                     self.background.get_rect().midbottom)
+        self.background.blit(instruction_text, textpos)
+            
     def main_loop(self):
+        print "game state start screen? ", GameState.start_screen
         self.make_player()
+        self.make_alien_wave(1)
         self.make_defenses()
         while 1:
-            GameState.alien_time = pygame.time.get_ticks()
-            self.process_input()
-            self.make_alien_missile()
-            self.collision_detection()
-            self.update()
-            self.render_screen()
+            if GameState.start_screen:
+                self.splash_screen()
+            elif not GameState.start_screen:
+                GameState.alien_time = pygame.time.get_ticks()
+                self.process_input()
+                self.make_alien_missile()
+                self.collision_detection()
+                self.update()
+                self.render_screen()
 
 if __name__ == "__main__":
     pyvader = Pyvader()
