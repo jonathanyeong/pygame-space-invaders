@@ -1,4 +1,5 @@
 import pygame
+from gamestate import GameState
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):

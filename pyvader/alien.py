@@ -1,4 +1,5 @@
 import pygame
+from gamestate import GameState
 
 class Alien(pygame.sprite.Sprite):
     def __init__(self):

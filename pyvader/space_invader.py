@@ -4,14 +4,17 @@ import time
 import os
 import sys
 import random
-import gamestate
-import player
-import alien
-import alien_two
-import alien_three
-import missile
-import block
+from gamestate import GameState
+from player import Player
+from alien import Alien
+from alien_two import AlienTwo
+from alien_three import AlienThree
+from missile import Missile
+from block import Block
 from pygame.locals import *
+
+ALIEN_ROWS = 5
+ALIEN_COLUMNS = 11
 
 class Pyvader:
     def __init__(self):

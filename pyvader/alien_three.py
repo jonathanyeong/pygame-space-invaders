@@ -1,5 +1,5 @@
 import pygame
-import gamestate
+from gamestate import GameState
 
 class AlienThree(pygame.sprite.Sprite):
     def __init__(self):
