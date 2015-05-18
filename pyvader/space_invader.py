@@ -61,6 +61,50 @@ class Pyvader:
         sprite = pygame.transform.scale(sprite, (27, 20))
         AlienThree.image = sprite
 
+    # ----------------------------------------------------
+    #               VIDEO/DISPLAY Methods
+    # ----------------------------------------------------
+
+    def splash_screen(self):
+        while GameState.start_screen:
+            self.main_menu_text()
+            logo = pygame.image.load("assets/images/ClearLogo.png")
+            bg_center = self.background.get_rect().center
+            self.background.blit(logo, logo.get_rect(center=bg_center))
+            self.screen.blit(self.background, (0, 0))
+            pygame.display.update()
+            self.process_input()
+
+    def draw_text(self, render_text, pos):
+        text = self.font.render(render_text, 1, (250, 250, 250))
+        textpos = text.get_rect()
+        (x, y) = pos
+
+        if (y == 0):
+            # We know that this is at the top of the screen
+            textpos.midtop = pos
+        elif (y == self.background.get_rect().height):
+            # We know that this is the bottom of screen
+            textpos.midbottom = pos
+        else:
+            textpos.center = pos
+
+        return text, textpos
+
+    def main_menu_text(self):
+        # Display title text
+        (title_text, textpos) = self.draw_text("Space Invaders",
+                                               self.background.get_rect().midtop)
+        self.background.blit(title_text, textpos)
+        # Display instruction text
+        (instruction_text, textpos) = self.draw_text("Press B to start",
+                                                     self.background.get_rect().midbottom)
+        self.background.blit(instruction_text, textpos)
+            
+    # ----------------------------------------------------
+    #               Sprite Factory Methods
+    # ----------------------------------------------------
+
     # This should be elsewhere,
     # Maybe its own class.
     def alien_image_type(self, typeOfAlien):
@@ -101,42 +145,6 @@ class Pyvader:
         self.player_group.add(self.player)
         self.all_sprite_list.add(self.player)
     
-    def process_input(self):
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
-                if event.key == K_SLASH:
-                    self.screen = pygame.display.set_mode((1080, 720), DOUBLEBUF | FULLSCREEN)
-
-        keys = pygame.key.get_pressed()
-        if keys[K_k]:
-            GameState.vector = 1
-        elif keys[K_d]:
-            GameState.vector = -1
-        else:
-            GameState.vector = 0
-
-        if keys[K_RETURN]:
-            print "k return"
-            if GameState.start_screen:
-                GameState.start_screen = False
-
-        if keys[K_r] or keys[K_u]:
-            GameState.shoot_bullet = True
-
-
-    def render_screen(self):
-        self.background.fill((10, 10, 10))
-        self.screen.blit(self.background, (0,0))
-        self.all_sprite_list.draw(self.screen)
-        pygame.display.update()
-        self.clock.tick(30)
-
     def make_bullet(self):
         # This fixes the issue where multiple bullets will keep firing
         # because the keypress is registered multiple times (debouncing issue)
@@ -154,28 +162,6 @@ class Pyvader:
             self.all_sprite_list.add(bullet)
         GameState.shoot_bullet = False
 
-    def update(self):
-        for actor in [self.player_group, self.bullet_group,
-                      self.alien_group, self.missile_group]:
-            for i in actor:
-                i.update()
-        if GameState.shoot_bullet:
-            self.make_bullet()
-
-    def collision_detection(self):
-        pygame.sprite.groupcollide(
-                self.missile_group, self.barrier_group, True, True)
-        pygame.sprite.groupcollide(
-                self.bullet_group, self.barrier_group, True, True)
-
-        if pygame.sprite.groupcollide(
-                self.player_group, self.missile_group, False, True):
-            print "player loses a life"
-
-        for z in pygame.sprite.groupcollide(
-                self.bullet_group, self.alien_group, True, True):
-            print "alien should die"
-    
     def make_alien_missile(self):
         if len(self.alien_group):
             shoot = random.random()
@@ -207,42 +193,68 @@ class Pyvader:
         for spacing, spacing in enumerate(xrange(4)):
             self.make_barrier(9, 3, spacing)
 
-    def splash_screen(self):
-        while GameState.start_screen:
-            self.main_menu_text()
-            logo = pygame.image.load("assets/images/ClearLogo.png")
-            bg_center = self.background.get_rect().center
-            self.background.blit(logo, logo.get_rect(center=bg_center))
-            self.screen.blit(self.background, (0, 0))
-            pygame.display.update()
-            self.process_input()
+    def process_input(self):
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+                if event.key == K_SLASH:
+                    self.screen = pygame.display.set_mode((1080, 720), DOUBLEBUF | FULLSCREEN)
 
-    def draw_text(self, render_text, pos):
-        text = self.font.render(render_text, 1, (250, 250, 250))
-        textpos = text.get_rect()
-        (x, y) = pos
-
-        if (y == 0):
-            # We know that this is at the top of the screen
-            textpos.midtop = pos
-        elif (y == self.background.get_rect().height):
-            # We know that this is the bottom of screen
-            textpos.midbottom = pos
+        keys = pygame.key.get_pressed()
+        if keys[K_k]:
+            GameState.vector = 1
+        elif keys[K_d]:
+            GameState.vector = -1
         else:
-            textpos.center = pos
+            GameState.vector = 0
 
-        return text, textpos
+        if keys[K_RETURN]:
+            print "k return"
+            if GameState.start_screen:
+                GameState.start_screen = False
 
-    def main_menu_text(self):
-        # Display title text
-        (title_text, textpos) = self.draw_text("Space Invaders",
-                                               self.background.get_rect().midtop)
-        self.background.blit(title_text, textpos)
-        # Display instruction text
-        (instruction_text, textpos) = self.draw_text("Press B to start",
-                                                     self.background.get_rect().midbottom)
-        self.background.blit(instruction_text, textpos)
-            
+        if keys[K_r] or keys[K_u]:
+            GameState.shoot_bullet = True
+
+
+    # ----------------------------------------------------
+    #               Main Loop Methods
+    # ----------------------------------------------------
+
+    def render_screen(self):
+        self.background.fill((10, 10, 10))
+        self.screen.blit(self.background, (0,0))
+        self.all_sprite_list.draw(self.screen)
+        pygame.display.update()
+        self.clock.tick(30)
+
+    def update(self):
+        for actor in [self.player_group, self.bullet_group,
+                      self.alien_group, self.missile_group]:
+            for i in actor:
+                i.update()
+        if GameState.shoot_bullet:
+            self.make_bullet()
+
+    def collision_detection(self):
+        pygame.sprite.groupcollide(
+                self.missile_group, self.barrier_group, True, True)
+        pygame.sprite.groupcollide(
+                self.bullet_group, self.barrier_group, True, True)
+
+        if pygame.sprite.groupcollide(
+                self.player_group, self.missile_group, False, True):
+            print "player loses a life"
+
+        for z in pygame.sprite.groupcollide(
+                self.bullet_group, self.alien_group, True, True):
+            print "alien should die"
+
     def main_loop(self):
         print "game state start screen? ", GameState.start_screen
         self.make_player()
