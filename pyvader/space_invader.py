@@ -10,6 +10,7 @@ from alien import Alien
 from alien_two import AlienTwo
 from alien_three import AlienThree
 from missile import Missile
+from alien_manager import AlienManager
 from block import Block
 from pygame.locals import *
 
@@ -30,6 +31,7 @@ class Pyvader:
         self.init_player_sprite()
         self.init_alien_sprite()
         self.init_gamestate()
+        self.alien_manager = AlienManager()
         self.font = pygame.font.Font(None, 42)
         GameState.start_screen = True
 
@@ -108,13 +110,7 @@ class Pyvader:
     # This should be elsewhere,
     # Maybe its own class.
     def alien_image_type(self, typeOfAlien):
-        if (typeOfAlien == 0):
-            alien = Alien()
-        elif (typeOfAlien == 1):
-            alien = AlienTwo()
-        elif (typeOfAlien == 2):
-            alien = AlienThree()
-
+        alien = self.alien_manager.alien_image_type(typeOfAlien)
         self.alien_group.add(alien)
         self.all_sprite_list.add(alien)
         return alien
