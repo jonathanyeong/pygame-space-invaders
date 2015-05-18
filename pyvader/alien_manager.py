@@ -19,11 +19,14 @@ class AlienManager:
         AlienThree.image = sprite
 
     def alien_image_type(self, typeOfAlien):
+        speed = 30
+        wait_time = 1500
+        row_distance = 40
         if (typeOfAlien == 0):
-            alien = Alien()
+            alien = Alien(speed, wait_time, row_distance)
         elif (typeOfAlien == 1):
-            alien = AlienTwo()
+            alien = AlienTwo(speed, wait_time, row_distance)
         elif (typeOfAlien == 2):
-            alien = AlienThree()
+            alien = AlienThree(speed, wait_time, row_distance)
 
         return alien
