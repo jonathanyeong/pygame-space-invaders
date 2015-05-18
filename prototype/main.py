@@ -33,7 +33,7 @@ class AlienTwo(pygame.sprite.Sprite):
         self.speed = 30  # Speed of alien movement
         self.vector = [1, 1]
         self.has_moved = 0
-        self.wait_time = 2000
+        self.wait_time = 1500 
         self.time = pygame.time.get_ticks()
 
     def update(self):
@@ -45,7 +45,7 @@ class AlienTwo(pygame.sprite.Sprite):
                 self.has_moved += 1
             else:
                 # 20 being the row height?
-                self.rect.y += self.vector[1] * 20
+                self.rect.y += self.vector[1] * 40 
                 #if self.rect.x > 0:
                 #    self.rect.x = 1080 - 26
                 #else:
@@ -61,7 +61,7 @@ class AlienThree(pygame.sprite.Sprite):
         self.speed = 30  # Speed of alien movement
         self.vector = [1, 1]
         self.has_moved = 0
-        self.wait_time = 2000
+        self.wait_time = 1500
         self.time = pygame.time.get_ticks()
 
     def update(self):
@@ -72,7 +72,7 @@ class AlienThree(pygame.sprite.Sprite):
                 self.rect.x += self.vector[0] * self.speed
                 self.has_moved += 1
             else:
-                self.rect.y += self.vector[1] * 20
+                self.rect.y += self.vector[1] * 40
                 self.has_moved = 0
                 # 20 being the row height?
                 #if self.rect.x > 0:
@@ -89,7 +89,7 @@ class Alien(pygame.sprite.Sprite):
         self.speed = 30  # Speed of alien movement
         self.vector = [1, 1]
         self.has_moved = 0
-        self.wait_time = 2000
+        self.wait_time = 1500
         self.time = pygame.time.get_ticks()
 
     def update(self):
@@ -101,7 +101,7 @@ class Alien(pygame.sprite.Sprite):
                 self.has_moved += 1
             else:
                 # 20 being the row height?
-                self.rect.y += self.vector[1] * 20
+                self.rect.y += self.vector[1] * 40
                 #if self.rect.x > 0:
                 #    self.rect.x = 1080 - 26
                 #else:
@@ -295,7 +295,7 @@ class Pyvader:
     def make_alien_missile(self):
         if len(self.alien_group):
             shoot = random.random()
-            if shoot <= 0.01:
+            if shoot <= 0.05:
                 shooter = random.choice([
                     alien for alien in self.alien_group])
                 missile = Missile()
