@@ -1,13 +1,14 @@
 import pygame
+import gamestate
 
-class Alien(pygame.sprite.Sprite):
+class AlienThree(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
         self.speed = 30  # Speed of alien movement
         self.vector = [1, 1]
         self.has_moved = 0
-        self.wait_time = 1500
+        self.wait_time = 1500 
         self.time = pygame.time.get_ticks()
 
     def update(self):
@@ -19,7 +20,7 @@ class Alien(pygame.sprite.Sprite):
                 self.has_moved += 1
             else:
                 # 20 being the row height?
-                self.rect.y += self.vector[1] * 40
+                self.rect.y += self.vector[1] * 40 
                 #if self.rect.x > 0:
                 #    self.rect.x = 1080 - 26
                 #else:
