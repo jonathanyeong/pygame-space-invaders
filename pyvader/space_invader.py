@@ -132,7 +132,7 @@ class Pyvader:
                      ALIEN_HEIGHT + spacer))
 
     def make_player(self):
-        self.player = Player()
+        self.player = Player(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.player_group.add(self.player)
         self.all_sprite_list.add(self.player)
     
