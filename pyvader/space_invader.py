@@ -22,7 +22,7 @@ PLAYER_HEIGHT = 26
 PLAYER_WIDTH = 16
 ALIEN_WIDTH = 27
 ALIEN_HEIGHT = 20
-PLAYER_LIVES = 1
+PLAYER_LIVES = 0
 
 
 class Pyvader:
@@ -76,8 +76,11 @@ class Pyvader:
             pygame.display.update()
             self.process_input()
 
-    def draw_text(self, render_text, pos):
-        text = self.font.render(render_text, 1, (250, 250, 250))
+    def draw_text(self, render_text, pos, background=None):
+        if background is None:
+            text = self.font.render(render_text, 1, (250, 250, 250))
+        else:
+            text = self.font.render(render_text, 1, (250, 250, 250), background)
         textpos = text.get_rect()
         (x, y) = pos
 
@@ -259,9 +262,8 @@ class Pyvader:
     def is_dead(self):
         if self.player_lives < 0:
             (title_text, textpos) = self.draw_text("You lost the game!", 
-                                                  (self.background.get_rect().center))
-            print "title text: ", title_text
-            print "text pos: ", textpos
+                                                  (self.background.get_rect().center),
+                                                  (100, 100, 100))
             self.screen.blit(title_text, textpos)
             pygame.display.flip()
             self.reset_game()
