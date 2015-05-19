@@ -37,9 +37,9 @@ class Pyvader:
         self.clock = pygame.time.Clock()
         self.init_sprite_groups()
         self.init_player_sprite()
-        self.init_alien_sprite()
         self.init_gamestate()
         self.alien_manager = AlienManager()
+        self.alien_manager.init_alien_sprite()
         self.font = pygame.font.Font(None, 42)
         GameState.start_screen = True
 
@@ -59,17 +59,6 @@ class Pyvader:
         sprite = pygame.image.load("assets/images/player_ship.png")
         sprite = pygame.transform.scale(sprite, (PLAYER_HEIGHT, PLAYER_WIDTH))
         Player.image = sprite
-
-    def init_alien_sprite(self):
-        sprite = pygame.image.load("assets/images/alien_1a.png")
-        sprite = pygame.transform.scale(sprite, (ALIEN_WIDTH, ALIEN_HEIGHT))
-        Alien.image = sprite
-        sprite = pygame.image.load("assets/images/alien_2a.png")
-        sprite = pygame.transform.scale(sprite, (ALIEN_WIDTH, ALIEN_HEIGHT))
-        AlienTwo.image = sprite
-        sprite = pygame.image.load("assets/images/alien_3a.png")
-        sprite = pygame.transform.scale(sprite, (ALIEN_WIDTH, ALIEN_HEIGHT))
-        AlienThree.image = sprite
 
     # ----------------------------------------------------
     #               VIDEO/DISPLAY Methods
@@ -133,16 +122,14 @@ class Pyvader:
                 else:
                     alien = self.alien_image_type(0)
 
-                alien_width = 27
-                alien_height = 20
                 spacer = 10
                 # 27 being the width of one alien
                 # 20 being the height of one alien
                 # 10 is a spacer
                 alien.rect.x = spacer + (
-                        column * (alien_width + spacer))
-                alien.rect.y = alien_height + (row * (
-                    alien_height + spacer))
+                        column * (ALIEN_WIDTH + spacer))
+                alien.rect.y = ALIEN_HEIGHT + (row * (
+                     ALIEN_HEIGHT + spacer))
 
     def make_player(self):
         self.player = Player()
@@ -197,6 +184,10 @@ class Pyvader:
         for spacing, spacing in enumerate(xrange(4)):
             self.make_barrier(9, 3, spacing)
 
+    # ----------------------------------------------------
+    #               Main Loop Methods
+    # ----------------------------------------------------
+
     def process_input(self):
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -207,7 +198,7 @@ class Pyvader:
                     pygame.quit()
                     sys.exit()
                 if event.key == K_SLASH:
-                    self.screen = pygame.display.set_mode((1080, 720), DOUBLEBUF | FULLSCREEN)
+                    self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), DOUBLEBUF | FULLSCREEN)
 
         keys = pygame.key.get_pressed()
         if keys[K_k]:
@@ -218,17 +209,11 @@ class Pyvader:
             GameState.vector = 0
 
         if keys[K_RETURN]:
-            print "k return"
             if GameState.start_screen:
                 GameState.start_screen = False
 
         if keys[K_r] or keys[K_u]:
             GameState.shoot_bullet = True
-
-
-    # ----------------------------------------------------
-    #               Main Loop Methods
-    # ----------------------------------------------------
 
     def render_screen(self):
         self.background.fill((10, 10, 10))
@@ -257,10 +242,9 @@ class Pyvader:
 
         for z in pygame.sprite.groupcollide(
                 self.bullet_group, self.alien_group, True, True):
-            print "alien should die"
+            print "alien should die with an explosion! And some sound!"
 
     def main_loop(self):
-        print "game state start screen? ", GameState.start_screen
         self.make_player()
         self.make_alien_wave(1)
         self.make_defenses()
