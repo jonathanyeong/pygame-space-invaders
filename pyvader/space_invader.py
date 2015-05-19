@@ -172,17 +172,23 @@ class Pyvader:
                 self.all_sprite_list.add(missile)
 
     def make_barrier(self, columns, rows, spacer):
+        x_offset = 75
+        y_offset = 600
+        barrier_spacing = 170
         for row in range(rows):
             for column in range(columns):
                 barrier = Block((5, 251, 5), (10, 10))
-                barrier.rect.x = 110 + (250 * spacer) + (column * 10)
-                barrier.rect.y = 600 + (row * 10)
+                barrier.rect.x = x_offset + (barrier_spacing * spacer) \
+                                 + (column * 10)
+                barrier.rect.y = y_offset + (row * 10)
                 self.barrier_group.add(barrier)
                 self.all_sprite_list.add(barrier)
 
     def make_defenses(self):
+        barrier_length = 7
+        barrier_height = 3
         for spacing, spacing in enumerate(xrange(4)):
-            self.make_barrier(9, 3, spacing)
+            self.make_barrier(barrier_length, barrier_height, spacing)
 
     # ----------------------------------------------------
     #               Main Loop Methods
