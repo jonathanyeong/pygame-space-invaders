@@ -22,7 +22,7 @@ PLAYER_HEIGHT = 26
 PLAYER_WIDTH = 16
 ALIEN_WIDTH = 27
 ALIEN_HEIGHT = 20
-PLAYER_LIVES = 0
+PLAYER_LIVES = 3
 
 
 class Pyvader:
@@ -133,7 +133,7 @@ class Pyvader:
                 # 10 is a spacer
                 alien.rect.x = spacer + (
                         column * (ALIEN_WIDTH + spacer))
-                alien.rect.y = ALIEN_HEIGHT + (row * (
+                alien.rect.y = (2 * ALIEN_HEIGHT) + (row * (
                      ALIEN_HEIGHT + spacer))
 
     def make_player(self):
@@ -199,7 +199,6 @@ class Pyvader:
     #               Main Loop Methods
     # ----------------------------------------------------
     
-
     def process_input(self):
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -234,8 +233,15 @@ class Pyvader:
         self.background.fill((10, 10, 10))
         self.screen.blit(self.background, (0,0))
         self.all_sprite_list.draw(self.screen)
+        self.refresh_scores()
         pygame.display.update()
         self.clock.tick(30)
+
+    def refresh_scores(self):
+        (text, textpos) = self.draw_text(("Lives: %d" % self.player_lives),
+                                          self.background.get_rect().midtop)
+        (bg_x, bg_y) = self.background.get_rect().topright
+        self.screen.blit(text, ((bg_x - text.get_rect().width), bg_y))
 
     def update(self):
         for actor in [self.player_group, self.bullet_group,
@@ -260,7 +266,7 @@ class Pyvader:
             print "alien should die with an explosion! And some sound!"
 
     def is_dead(self):
-        if self.player_lives < 0:
+        if self.player_lives < 1:
             (title_text, textpos) = self.draw_text("You lost the game!", 
                                                   (self.background.get_rect().center),
                                                   (100, 100, 100))
