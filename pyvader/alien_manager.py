@@ -22,11 +22,12 @@ class AlienManager:
         speed = 30
         wait_time = 1500
         row_distance = 40
+        steps = 10
         if (typeOfAlien == 0):
-            alien = Alien(speed, wait_time, row_distance)
+            alien = Alien(speed, wait_time, row_distance, steps)
         elif (typeOfAlien == 1):
-            alien = AlienTwo(speed, wait_time, row_distance)
+            alien = AlienTwo(speed, wait_time, row_distance, steps)
         elif (typeOfAlien == 2):
-            alien = AlienThree(speed, wait_time, row_distance)
+            alien = AlienThree(speed, wait_time, row_distance, steps)
 
         return alien
