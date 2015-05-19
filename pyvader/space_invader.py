@@ -22,6 +22,7 @@ PLAYER_HEIGHT = 26
 PLAYER_WIDTH = 16
 ALIEN_WIDTH = 27
 ALIEN_HEIGHT = 20
+PLAYER_LIVES = 1
 
 
 class Pyvader:
@@ -56,6 +57,7 @@ class Pyvader:
         GameState.shoot_bullet = False
 
     def init_player_sprite(self):
+        self.player_lives = PLAYER_LIVES
         sprite = pygame.image.load("assets/images/player_ship.png")
         sprite = pygame.transform.scale(sprite, (PLAYER_HEIGHT, PLAYER_WIDTH))
         Player.image = sprite
@@ -193,6 +195,7 @@ class Pyvader:
     # ----------------------------------------------------
     #               Main Loop Methods
     # ----------------------------------------------------
+    
 
     def process_input(self):
         for event in pygame.event.get():
@@ -217,6 +220,9 @@ class Pyvader:
         if keys[K_RETURN]:
             if GameState.start_screen:
                 GameState.start_screen = False
+                self.make_player()
+                self.make_alien_wave(1)
+                self.make_defenses()
 
         if keys[K_r] or keys[K_u]:
             GameState.shoot_bullet = True
@@ -244,16 +250,34 @@ class Pyvader:
 
         if pygame.sprite.groupcollide(
                 self.player_group, self.missile_group, False, True):
-            print "player loses a life"
+            self.player_lives -= 1
 
         for z in pygame.sprite.groupcollide(
                 self.bullet_group, self.alien_group, True, True):
             print "alien should die with an explosion! And some sound!"
 
+    def is_dead(self):
+        if self.player_lives < 0:
+            (title_text, textpos) = self.draw_text("You lost the game!", 
+                                                  (self.background.get_rect().center))
+            print "title text: ", title_text
+            print "text pos: ", textpos
+            self.screen.blit(title_text, textpos)
+            pygame.display.flip()
+            self.reset_game()
+            pygame.time.delay(2000)
+            return True
+
+    def reset_game(self):
+        for items in [self.bullet_group, self.player_group,
+                      self.alien_group, self.missile_group,
+                      self.barrier_group]:
+            for i in items:
+                i.kill()
+        self.player_lives = PLAYER_LIVES
+
+        
     def main_loop(self):
-        self.make_player()
-        self.make_alien_wave(1)
-        self.make_defenses()
         while 1:
             if GameState.start_screen:
                 self.splash_screen()
@@ -264,6 +288,9 @@ class Pyvader:
                 self.collision_detection()
                 self.update()
                 self.render_screen()
+                if self.is_dead():
+                    GameState.start_screen = True
+                
 
 if __name__ == "__main__":
     pyvader = Pyvader()
