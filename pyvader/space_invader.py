@@ -16,13 +16,21 @@ from pygame.locals import *
 
 ALIEN_ROWS = 5
 ALIEN_COLUMNS = 11
+SCREEN_WIDTH = 1080
+SCREEN_HEIGHT = 720
+PLAYER_HEIGHT = 26
+PLAYER_WIDTH = 16
+ALIEN_WIDTH = 27
+ALIEN_HEIGHT = 20
+
 
 class Pyvader:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((1080, 720), DOUBLEBUF)
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT),
+                                              DOUBLEBUF)
         pygame.display.set_caption("Pygame Space Invader Prototype")
-        self.screen.fill((10,10,10))
+        self.screen.fill((10, 10, 10))
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill((10, 10, 10))
@@ -41,7 +49,7 @@ class Pyvader:
         self.barrier_group = pygame.sprite.Group()
         self.missile_group = pygame.sprite.Group()
         self.alien_group = pygame.sprite.Group()
-        self.all_sprite_list = pygame.sprite.Group() 
+        self.all_sprite_list = pygame.sprite.Group()
 
     def init_gamestate(self):
         GameState.vector = 0
@@ -49,18 +57,18 @@ class Pyvader:
 
     def init_player_sprite(self):
         sprite = pygame.image.load("assets/images/player_ship.png")
-        sprite = pygame.transform.scale(sprite, (26, 16))
+        sprite = pygame.transform.scale(sprite, (PLAYER_HEIGHT, PLAYER_WIDTH))
         Player.image = sprite
 
     def init_alien_sprite(self):
         sprite = pygame.image.load("assets/images/alien_1a.png")
-        sprite = pygame.transform.scale(sprite, (27, 20))
+        sprite = pygame.transform.scale(sprite, (ALIEN_WIDTH, ALIEN_HEIGHT))
         Alien.image = sprite
         sprite = pygame.image.load("assets/images/alien_2a.png")
-        sprite = pygame.transform.scale(sprite, (27, 20))
+        sprite = pygame.transform.scale(sprite, (ALIEN_WIDTH, ALIEN_HEIGHT))
         AlienTwo.image = sprite
         sprite = pygame.image.load("assets/images/alien_3a.png")
-        sprite = pygame.transform.scale(sprite, (27, 20))
+        sprite = pygame.transform.scale(sprite, (ALIEN_WIDTH, ALIEN_HEIGHT))
         AlienThree.image = sprite
 
     # ----------------------------------------------------
