@@ -18,9 +18,9 @@ class AlienManager:
         sprite = pygame.transform.scale(sprite, (27, 20))
         AlienThree.image = sprite
 
-    def alien_image_type(self, typeOfAlien):
-        speed = 30
-        wait_time = 1500
+    def alien_image_type(self, typeOfAlien, speed_multiplier):
+        speed = 20 
+        wait_time = 1500 - (50 * (speed_multiplier - 1))
         row_distance = 40
         steps = 10
         if (typeOfAlien == 0):

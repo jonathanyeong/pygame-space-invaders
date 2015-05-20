@@ -54,6 +54,7 @@ class Pyvader:
 
     def init_gamestate(self):
         self.score = 0
+        self.rounds_won = 0
         GameState.vector = 0
         GameState.shoot_bullet = False
 
@@ -112,21 +113,21 @@ class Pyvader:
 
     # This should be elsewhere,
     # Maybe its own class.
-    def alien_image_type(self, typeOfAlien):
-        alien = self.alien_manager.alien_image_type(typeOfAlien)
+    def alien_image_type(self, typeOfAlien, speed):
+        alien = self.alien_manager.alien_image_type(typeOfAlien, speed)
         self.alien_group.add(alien)
         self.all_sprite_list.add(alien)
         return alien
 
-    def make_alien_wave(self, number):
+    def make_alien_wave(self, speed):
         for row in range(ALIEN_ROWS):
             for column in range(ALIEN_COLUMNS):
                 if row == 0:
-                    alien = self.alien_image_type(2)
+                    alien = self.alien_image_type(2, speed)
                 elif row == 1 or row == 2:
-                    alien = self.alien_image_type(1)
+                    alien = self.alien_image_type(1, speed)
                 else:
-                    alien = self.alien_image_type(0)
+                    alien = self.alien_image_type(0, speed)
 
                 spacer = 10
                 # 27 being the width of one alien
@@ -297,6 +298,25 @@ class Pyvader:
                 i.kill()
         self.player_lives = PLAYER_LIVES
 
+    def win_round(self):
+        if len(self.alien_group) < 1:
+            self.rounds_won += 1
+            (title_text, textpos) = self.draw_text("You won round %d!" % self.rounds_won, 
+                                                  (self.background.get_rect().center),
+                                                  (100, 100, 100))
+            self.screen.blit(title_text, textpos)
+            pygame.display.flip()
+            pygame.time.delay(2000)
+            return True
+
+    def next_round(self):
+        for actor in [self.missile_group, self.barrier_group,
+                      self.bullet_group]:
+            for i in actor:
+                i.kill()
+        self.player_lives = PLAYER_LIVES
+        self.make_alien_wave(self.rounds_won)
+        self.make_defenses()
         
     def main_loop(self):
         while 1:
@@ -311,6 +331,9 @@ class Pyvader:
                 self.render_screen()
                 if self.is_dead():
                     GameState.start_screen = True
+                if self.win_round():
+                    self.next_round()
+
                 
 
 if __name__ == "__main__":
