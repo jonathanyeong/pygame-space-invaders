@@ -53,6 +53,7 @@ class Pyvader:
         self.all_sprite_list = pygame.sprite.Group()
 
     def init_gamestate(self):
+        self.score = 0
         GameState.vector = 0
         GameState.shoot_bullet = False
 
@@ -222,6 +223,7 @@ class Pyvader:
         if keys[K_RETURN]:
             if GameState.start_screen:
                 GameState.start_screen = False
+                self.score = 0
                 self.make_player()
                 self.make_alien_wave(1)
                 self.make_defenses()
@@ -242,6 +244,10 @@ class Pyvader:
                                           self.background.get_rect().midtop)
         (bg_x, bg_y) = self.background.get_rect().topright
         self.screen.blit(text, ((bg_x - text.get_rect().width), bg_y))
+        (text, textpos) = self.draw_text(("Score: %d pts" % self.score),
+                                          self.background.get_rect().midtop)
+        (bg_x, bg_y) = self.background.get_rect().topleft
+        self.screen.blit(text, (bg_x, bg_y))
 
     def update(self):
         for actor in [self.player_group, self.bullet_group,
@@ -262,7 +268,14 @@ class Pyvader:
             self.player_lives -= 1
 
         for z in pygame.sprite.groupcollide(
-                self.bullet_group, self.alien_group, True, True):
+                self.alien_group, self.bullet_group, True, True):
+            if z.__class__.__name__ == "Alien":
+                self.score += 10
+            elif z.__class__.__name__ == "AlienTwo":
+                self.score += 20
+            elif z.__class__.__name__ == "AlienThree":
+                self.score += 40
+
             print "alien should die with an explosion! And some sound!"
 
     def is_dead(self):
