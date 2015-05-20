@@ -9,6 +9,7 @@ from player import Player
 from alien import Alien
 from alien_two import AlienTwo
 from alien_three import AlienThree
+from mothership import Mothership
 from missile import Missile
 from alien_manager import AlienManager
 from block import Block
@@ -39,10 +40,12 @@ class Pyvader:
         self.clock = pygame.time.Clock()
         self.init_sprite_groups()
         self.init_player_sprite()
+        self.init_mothership_sprite()
         self.init_gamestate()
         self.alien_manager = AlienManager()
         self.alien_manager.init_alien_sprite()
         self.font = pygame.font.Font(None, 42)
+        self.time = pygame.time.get_ticks()
         GameState.start_screen = True
 
     def init_sprite_groups(self):
@@ -52,18 +55,25 @@ class Pyvader:
         self.missile_group = pygame.sprite.Group()
         self.alien_group = pygame.sprite.Group()
         self.all_sprite_list = pygame.sprite.Group()
+        self.mothership_group = pygame.sprite.Group()
 
     def init_gamestate(self):
         self.score = 0
         self.rounds_won = 0
         GameState.vector = 0
         GameState.shoot_bullet = False
+        GameState.mothership_animating = False
 
     def init_player_sprite(self):
         self.player_lives = PLAYER_LIVES
         sprite = pygame.image.load("assets/images/player_ship.png")
         sprite = pygame.transform.scale(sprite, (PLAYER_HEIGHT, PLAYER_WIDTH))
         Player.image = sprite
+
+    def init_mothership_sprite(self):
+        sprite = pygame.image.load("assets/images/mothership.png")
+        sprite = pygame.transform.scale(sprite, (60, 20))
+        Mothership.image = sprite
 
     # ----------------------------------------------------
     #               VIDEO/DISPLAY Methods
@@ -136,7 +146,7 @@ class Pyvader:
                 # 10 is a spacer
                 alien.rect.x = spacer + (
                         column * (ALIEN_WIDTH + spacer))
-                alien.rect.y = (2 * ALIEN_HEIGHT) + (row * (
+                alien.rect.y = (3 * ALIEN_HEIGHT) + (row * (
                      ALIEN_HEIGHT + spacer))
 
     def make_player(self):
@@ -144,6 +154,11 @@ class Pyvader:
         self.player_group.add(self.player)
         self.all_sprite_list.add(self.player)
     
+    def make_mothership(self):
+        self.mothership = Mothership(1, SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.mothership_group.add(self.mothership)
+        self.all_sprite_list.add(self.mothership)
+
     def make_bullet(self):
         # This fixes the issue where multiple bullets will keep firing
         # because the keypress is registered multiple times (debouncing issue)
@@ -228,6 +243,7 @@ class Pyvader:
                 self.reset_game()
                 self.score = 0
                 self.make_player()
+                self.make_mothership()
                 self.make_alien_wave(1)
                 self.make_defenses()
 
@@ -254,9 +270,16 @@ class Pyvader:
 
     def update(self):
         for actor in [self.player_group, self.bullet_group,
-                      self.alien_group, self.missile_group]:
+                      self.alien_group, self.missile_group,
+                      self.mothership_group]:
             for i in actor:
+                #self.mothership.rect.x -= 1
                 i.update()
+
+        if GameState.mothership_animating is True:
+            for actor in self.mothership_group:
+                actor.update()
+
         if GameState.shoot_bullet:
             self.make_bullet()
 
@@ -280,6 +303,12 @@ class Pyvader:
                 self.score += 40
 
             print "alien should die with an explosion! And some sound!"
+
+        for z in pygame.sprite.groupcollide(
+                self.mothership_group, self.bullet_group, True, True):
+            print "mothership dies!"
+            print "mothership group, ", self.mothership_group
+            print "self.mothership? ", self.mothership
 
     def is_dead(self):
         if self.player_lives < 1:
@@ -321,6 +350,7 @@ class Pyvader:
                 i.kill()
         self.player_lives = PLAYER_LIVES
         self.make_alien_wave(self.rounds_won)
+        self.make_mothership()
         self.make_defenses()
         
     def defenses_breached(self):
@@ -336,11 +366,17 @@ class Pyvader:
                 self.splash_screen()
             elif not GameState.start_screen:
                 GameState.alien_time = pygame.time.get_ticks()
+                GameState.mothership_time = pygame.time.get_ticks()
                 self.process_input()
                 self.make_alien_missile()
                 self.collision_detection()
                 self.update()
                 self.render_screen()
+                if GameState.mothership_time - self.time > random.randrange(10000, 20000):
+                    GameState.mothership_animating = True
+                    if (len(self.mothership_group) == 0):
+                        self.make_mothership()
+                    self.time = GameState.mothership_time
                 if self.is_dead() or self.defenses_breached():
                     GameState.start_screen = True
                 if self.win_round():

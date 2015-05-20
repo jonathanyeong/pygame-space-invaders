@@ -22,7 +22,7 @@ class AlienManager:
         speed = 20 
         wait_time = 1500 - (50 * (speed_multiplier - 1))
         row_distance = 40
-        steps = 10
+        steps = 15
         if (typeOfAlien == 0):
             alien = Alien(speed, wait_time, row_distance, steps)
         elif (typeOfAlien == 1):
