@@ -23,6 +23,7 @@ PLAYER_WIDTH = 16
 ALIEN_WIDTH = 27
 ALIEN_HEIGHT = 20
 PLAYER_LIVES = 3
+BARRIER_BOUNDARY = 600
 
 
 class Pyvader:
@@ -180,7 +181,7 @@ class Pyvader:
 
     def make_barrier(self, columns, rows, spacer):
         x_offset = 75
-        y_offset = 600
+        y_offset = BARRIER_BOUNDARY
         barrier_spacing = 170
         for row in range(rows):
             for column in range(columns):
@@ -224,6 +225,7 @@ class Pyvader:
         if keys[K_RETURN]:
             if GameState.start_screen:
                 GameState.start_screen = False
+                self.reset_game()
                 self.score = 0
                 self.make_player()
                 self.make_alien_wave(1)
@@ -281,14 +283,16 @@ class Pyvader:
 
     def is_dead(self):
         if self.player_lives < 1:
+            self.lose_game_text()
+            pygame.time.delay(2000)
+            return True
+
+    def lose_game_text(self):
             (title_text, textpos) = self.draw_text("You lost the game!", 
                                                   (self.background.get_rect().center),
                                                   (100, 100, 100))
             self.screen.blit(title_text, textpos)
             pygame.display.flip()
-            self.reset_game()
-            pygame.time.delay(2000)
-            return True
 
     def reset_game(self):
         for items in [self.bullet_group, self.player_group,
@@ -297,6 +301,7 @@ class Pyvader:
             for i in items:
                 i.kill()
         self.player_lives = PLAYER_LIVES
+        self.rounds_won = 0
 
     def win_round(self):
         if len(self.alien_group) < 1:
@@ -318,6 +323,13 @@ class Pyvader:
         self.make_alien_wave(self.rounds_won)
         self.make_defenses()
         
+    def defenses_breached(self):
+        for alien in self.alien_group:
+            if alien.rect.y > BARRIER_BOUNDARY:
+                self.lose_game_text()
+                pygame.time.delay(2000)
+                return True
+
     def main_loop(self):
         while 1:
             if GameState.start_screen:
@@ -329,7 +341,7 @@ class Pyvader:
                 self.collision_detection()
                 self.update()
                 self.render_screen()
-                if self.is_dead():
+                if self.is_dead() or self.defenses_breached():
                     GameState.start_screen = True
                 if self.win_round():
                     self.next_round()
