@@ -38,6 +38,7 @@ class Pyvader:
         self.background = self.background.convert()
         self.background.fill((10, 10, 10))
         self.clock = pygame.time.Clock()
+        self.shots_taken = 0
         self.init_sprite_groups()
         self.init_player_sprite()
         self.init_mothership_sprite()
@@ -163,6 +164,7 @@ class Pyvader:
         # This fixes the issue where multiple bullets will keep firing
         # because the keypress is registered multiple times (debouncing issue)
         if len(self.bullet_group) == 0:
+            self.shots_taken += 1
             bullet = Missile()
             sprite = pygame.image.load("assets/images/missile.png")
             sprite = pygame.transform.scale(sprite, (4, 10))
@@ -179,7 +181,7 @@ class Pyvader:
     def make_alien_missile(self):
         if len(self.alien_group):
             shoot = random.random()
-            if shoot <= 0.05:
+            if shoot <= 0.03:
                 shooter = random.choice([
                     alien for alien in self.alien_group])
                 missile = Missile()
@@ -302,13 +304,18 @@ class Pyvader:
             elif z.__class__.__name__ == "AlienThree":
                 self.score += 40
 
-            print "alien should die with an explosion! And some sound!"
-
         for z in pygame.sprite.groupcollide(
                 self.mothership_group, self.bullet_group, True, True):
-            print "mothership dies!"
-            print "mothership group, ", self.mothership_group
-            print "self.mothership? ", self.mothership
+            print "Shots taken!: ", self.shots_taken
+            if self.shots_taken <= 23:
+                self.score += 300
+            elif self.shots_taken > 23 and self.shots_taken <= 33:
+                self.score += 150
+            elif self.shots_taken > 33 and self.shots_taken <= 43:
+                self.score += 100
+            else:
+                self.score += 50
+            self.shots_taken = 0
 
     def is_dead(self):
         if self.player_lives < 1:
@@ -331,6 +338,7 @@ class Pyvader:
                 i.kill()
         self.player_lives = PLAYER_LIVES
         self.rounds_won = 0
+        self.shots_taken = 0
 
     def win_round(self):
         if len(self.alien_group) < 1:
@@ -372,7 +380,8 @@ class Pyvader:
                 self.collision_detection()
                 self.update()
                 self.render_screen()
-                if GameState.mothership_time - self.time > random.randrange(10000, 20000):
+                # mothership appears every 25 seconds
+                if GameState.mothership_time - self.time > 25000:
                     GameState.mothership_animating = True
                     if (len(self.mothership_group) == 0):
                         self.make_mothership()
