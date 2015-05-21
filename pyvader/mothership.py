@@ -16,6 +16,7 @@ class Mothership(pygame.sprite.Sprite):
             self.time = GameState.alien_time
             self.rect.x -= self.speed
         else:
+            GameState.shots_taken = 0
             GameState.mothership_animating = False
             self.rect.topleft = (self.max_width, self.rect.height*2)
 

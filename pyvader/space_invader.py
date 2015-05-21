@@ -38,7 +38,6 @@ class Pyvader:
         self.background = self.background.convert()
         self.background.fill((10, 10, 10))
         self.clock = pygame.time.Clock()
-        self.shots_taken = 0
         self.init_sprite_groups()
         self.init_player_sprite()
         self.init_mothership_sprite()
@@ -61,6 +60,7 @@ class Pyvader:
     def init_gamestate(self):
         self.score = 0
         self.rounds_won = 0
+        GameState.shots_taken = 0
         GameState.vector = 0
         GameState.shoot_bullet = False
         GameState.mothership_animating = False
@@ -164,7 +164,7 @@ class Pyvader:
         # This fixes the issue where multiple bullets will keep firing
         # because the keypress is registered multiple times (debouncing issue)
         if len(self.bullet_group) == 0:
-            self.shots_taken += 1
+            GameState.shots_taken += 1
             bullet = Missile()
             sprite = pygame.image.load("assets/images/missile.png")
             sprite = pygame.transform.scale(sprite, (4, 10))
@@ -306,16 +306,16 @@ class Pyvader:
 
         for z in pygame.sprite.groupcollide(
                 self.mothership_group, self.bullet_group, True, True):
-            print "Shots taken!: ", self.shots_taken
-            if self.shots_taken <= 23:
+            print "Shots taken!: ", GameState.shots_taken
+            if GameState.shots_taken <= 23:
                 self.score += 300
-            elif self.shots_taken > 23 and self.shots_taken <= 33:
+            elif GameState.shots_taken > 23 and GameState.shots_taken <= 33:
                 self.score += 150
-            elif self.shots_taken > 33 and self.shots_taken <= 43:
+            elif GameState.shots_taken > 33 and GameState.shots_taken <= 43:
                 self.score += 100
             else:
                 self.score += 50
-            self.shots_taken = 0
+            GameState.shots_taken = 0
 
     def is_dead(self):
         if self.player_lives < 1:
@@ -338,7 +338,7 @@ class Pyvader:
                 i.kill()
         self.player_lives = PLAYER_LIVES
         self.rounds_won = 0
-        self.shots_taken = 0
+        GameState.shots_taken = 0
 
     def win_round(self):
         if len(self.alien_group) < 1:
