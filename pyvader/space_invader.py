@@ -76,6 +76,29 @@ class Pyvader:
         sprite = pygame.transform.scale(sprite, (60, 20))
         Mothership.image = sprite
 
+    def init_bullet(self):
+        bullet = Missile()
+        sprite = pygame.image.load("assets/images/missile.png")
+        sprite = pygame.transform.scale(sprite, (4, 10))
+        bullet.image = sprite
+        bullet.rect = bullet.image.get_rect()
+        bullet.vector = -1
+        bullet.speed = 10
+        bullet.rect.x = self.player.rect.x + 10
+        bullet.rect.y = self.player.rect.y
+        return bullet
+
+    def init_alien_missile(self, shooter):
+        missile = Missile()
+        sprite = pygame.image.load("assets/images/missile.png")
+        sprite = pygame.transform.scale(sprite, (4, 10))
+        missile.image = sprite
+        missile.rect = missile.image.get_rect()
+        missile.rect.x = shooter.rect.x + 15
+        missile.rect.y = shooter.rect.y + 40
+        missile.speed = 5
+        missile.vector = 1
+        return missile
     # ----------------------------------------------------
     #               VIDEO/DISPLAY Methods
     # ----------------------------------------------------
@@ -124,28 +147,13 @@ class Pyvader:
     #               Sprite Factory Methods
     # ----------------------------------------------------
 
-    # This should be elsewhere,
-    # Maybe its own class.
-    def alien_image_type(self, typeOfAlien, speed):
-        alien = self.alien_manager.alien_image_type(typeOfAlien, speed)
-        self.alien_group.add(alien)
-        self.all_sprite_list.add(alien)
-        return alien
-
     def make_alien_wave(self, speed):
         for row in range(ALIEN_ROWS):
             for column in range(ALIEN_COLUMNS):
-                if row == 0:
-                    alien = self.alien_image_type(2, speed)
-                elif row == 1 or row == 2:
-                    alien = self.alien_image_type(1, speed)
-                else:
-                    alien = self.alien_image_type(0, speed)
-
+                alien = self.alien_manager.alien_image_type(row, speed)
+                self.alien_group.add(alien)
+                self.all_sprite_list.add(alien)
                 spacer = 10
-                # 27 being the width of one alien
-                # 20 being the height of one alien
-                # 10 is a spacer
                 alien.rect.x = spacer + (
                         column * (ALIEN_WIDTH + spacer))
                 alien.rect.y = (3 * ALIEN_HEIGHT) + (row * (
@@ -166,15 +174,7 @@ class Pyvader:
         # because the keypress is registered multiple times (debouncing issue)
         if len(self.bullet_group) == 0:
             GameState.shots_taken += 1
-            bullet = Missile()
-            sprite = pygame.image.load("assets/images/missile.png")
-            sprite = pygame.transform.scale(sprite, (4, 10))
-            bullet.image = sprite
-            bullet.rect = bullet.image.get_rect()
-            bullet.vector = -1
-            bullet.speed = 10
-            bullet.rect.x = self.player.rect.x + 10
-            bullet.rect.y = self.player.rect.y
+            bullet = self.init_bullet()
             self.bullet_group.add(bullet)
             self.all_sprite_list.add(bullet)
         GameState.shoot_bullet = False
@@ -185,15 +185,7 @@ class Pyvader:
             if shoot <= 0.03:
                 shooter = random.choice([
                     alien for alien in self.alien_group])
-                missile = Missile()
-                sprite = pygame.image.load("assets/images/missile.png")
-                sprite = pygame.transform.scale(sprite, (4, 10))
-                missile.image = sprite
-                missile.rect = missile.image.get_rect()
-                missile.rect.x = shooter.rect.x + 15
-                missile.rect.y = shooter.rect.y + 40
-                missile.speed = 5
-                missile.vector = 1
+                missile = self.init_alien_missile(shooter)
                 self.missile_group.add(missile)
                 self.all_sprite_list.add(missile)
 
@@ -201,9 +193,11 @@ class Pyvader:
         x_offset = 75
         y_offset = BARRIER_BOUNDARY
         barrier_spacing = 170
+        block_colour = (5, 251, 5)  # Bright green colour
+        block_size = (10, 10)
         for row in range(rows):
             for column in range(columns):
-                barrier = Block((5, 251, 5), (10, 10))
+                barrier = Block(block_colour, block_size)
                 barrier.rect.x = x_offset + (barrier_spacing * spacer) \
                     + (column * 10)
                 barrier.rect.y = y_offset + (row * 10)
