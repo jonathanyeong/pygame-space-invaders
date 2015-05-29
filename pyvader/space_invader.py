@@ -94,7 +94,8 @@ class Pyvader:
         if background is None:
             text = self.font.render(render_text, 1, (250, 250, 250))
         else:
-            text = self.font.render(render_text, 1, (250, 250, 250), background)
+            text = self.font.render(render_text, 1, (250, 250, 250),
+                                    background)
         textpos = text.get_rect()
         (x, y) = pos
 
@@ -118,7 +119,7 @@ class Pyvader:
         (instruction_text, textpos) = self.draw_text("Press B to start",
                                                      self.background.get_rect().midbottom)
         self.background.blit(instruction_text, textpos)
-            
+
     # ----------------------------------------------------
     #               Sprite Factory Methods
     # ----------------------------------------------------
@@ -154,7 +155,7 @@ class Pyvader:
         self.player = Player(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.player_group.add(self.player)
         self.all_sprite_list.add(self.player)
-    
+
     def make_mothership(self):
         self.mothership = Mothership(1, SCREEN_WIDTH, SCREEN_HEIGHT)
         self.mothership_group.add(self.mothership)
@@ -204,7 +205,7 @@ class Pyvader:
             for column in range(columns):
                 barrier = Block((5, 251, 5), (10, 10))
                 barrier.rect.x = x_offset + (barrier_spacing * spacer) \
-                                 + (column * 10)
+                    + (column * 10)
                 barrier.rect.y = y_offset + (row * 10)
                 self.barrier_group.add(barrier)
                 self.all_sprite_list.add(barrier)
@@ -216,9 +217,64 @@ class Pyvader:
             self.make_barrier(barrier_length, barrier_height, spacing)
 
     # ----------------------------------------------------
+    #               Game Logic Methods
+    # ----------------------------------------------------
+
+    def is_dead(self):
+        if self.player_lives < 1:
+            self.lose_game_text()
+            pygame.time.delay(2000)
+            return True
+
+    def lose_game_text(self):
+            (title_text, textpos) = self.draw_text("You lost the game!",
+                                                   (self.background.get_rect().center),
+                                                   (100, 100, 100))
+            self.screen.blit(title_text, textpos)
+            pygame.display.flip()
+
+    def reset_game(self):
+        for items in [self.bullet_group, self.player_group,
+                      self.alien_group, self.missile_group,
+                      self.barrier_group]:
+            for i in items:
+                i.kill()
+        self.player_lives = PLAYER_LIVES
+        self.rounds_won = 0
+        GameState.shots_taken = 0
+
+    def win_round(self):
+        if len(self.alien_group) < 1:
+            self.rounds_won += 1
+            (title_text, textpos) = self.draw_text("You won round %d!" % self.rounds_won,
+                                                   (self.background.get_rect().center),
+                                                   (100, 100, 100))
+            self.screen.blit(title_text, textpos)
+            pygame.display.flip()
+            pygame.time.delay(2000)
+            return True
+
+    def next_round(self):
+        for actor in [self.missile_group, self.barrier_group,
+                      self.bullet_group]:
+            for i in actor:
+                i.kill()
+        self.player_lives = PLAYER_LIVES
+        self.make_alien_wave(self.rounds_won)
+        self.make_mothership()
+        self.make_defenses()
+
+    def defenses_breached(self):
+        for alien in self.alien_group:
+            if alien.rect.y > BARRIER_BOUNDARY:
+                self.lose_game_text()
+                pygame.time.delay(2000)
+                return True
+
+    # ----------------------------------------------------
     #               Main Loop Methods
     # ----------------------------------------------------
-    
+
     def process_input(self):
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -229,7 +285,8 @@ class Pyvader:
                     pygame.quit()
                     sys.exit()
                 if event.key == K_SLASH:
-                    self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), DOUBLEBUF | FULLSCREEN)
+                    self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT),
+                                                          DOUBLEBUF | FULLSCREEN)
 
         keys = pygame.key.get_pressed()
         if keys[K_k]:
@@ -254,7 +311,7 @@ class Pyvader:
 
     def render_screen(self):
         self.background.fill((10, 10, 10))
-        self.screen.blit(self.background, (0,0))
+        self.screen.blit(self.background, (0, 0))
         self.all_sprite_list.draw(self.screen)
         self.refresh_scores()
         pygame.display.update()
@@ -262,11 +319,11 @@ class Pyvader:
 
     def refresh_scores(self):
         (text, textpos) = self.draw_text(("Lives: %d" % self.player_lives),
-                                          self.background.get_rect().midtop)
+                                         self.background.get_rect().midtop)
         (bg_x, bg_y) = self.background.get_rect().topright
         self.screen.blit(text, ((bg_x - text.get_rect().width), bg_y))
         (text, textpos) = self.draw_text(("Score: %d pts" % self.score),
-                                          self.background.get_rect().midtop)
+                                         self.background.get_rect().midtop)
         (bg_x, bg_y) = self.background.get_rect().topleft
         self.screen.blit(text, (bg_x, bg_y))
 
@@ -275,7 +332,6 @@ class Pyvader:
                       self.alien_group, self.missile_group,
                       self.mothership_group]:
             for i in actor:
-                #self.mothership.rect.x -= 1
                 i.update()
 
         if GameState.mothership_animating is True:
@@ -317,57 +373,6 @@ class Pyvader:
                 self.score += 50
             GameState.shots_taken = 0
 
-    def is_dead(self):
-        if self.player_lives < 1:
-            self.lose_game_text()
-            pygame.time.delay(2000)
-            return True
-
-    def lose_game_text(self):
-            (title_text, textpos) = self.draw_text("You lost the game!", 
-                                                  (self.background.get_rect().center),
-                                                  (100, 100, 100))
-            self.screen.blit(title_text, textpos)
-            pygame.display.flip()
-
-    def reset_game(self):
-        for items in [self.bullet_group, self.player_group,
-                      self.alien_group, self.missile_group,
-                      self.barrier_group]:
-            for i in items:
-                i.kill()
-        self.player_lives = PLAYER_LIVES
-        self.rounds_won = 0
-        GameState.shots_taken = 0
-
-    def win_round(self):
-        if len(self.alien_group) < 1:
-            self.rounds_won += 1
-            (title_text, textpos) = self.draw_text("You won round %d!" % self.rounds_won, 
-                                                  (self.background.get_rect().center),
-                                                  (100, 100, 100))
-            self.screen.blit(title_text, textpos)
-            pygame.display.flip()
-            pygame.time.delay(2000)
-            return True
-
-    def next_round(self):
-        for actor in [self.missile_group, self.barrier_group,
-                      self.bullet_group]:
-            for i in actor:
-                i.kill()
-        self.player_lives = PLAYER_LIVES
-        self.make_alien_wave(self.rounds_won)
-        self.make_mothership()
-        self.make_defenses()
-        
-    def defenses_breached(self):
-        for alien in self.alien_group:
-            if alien.rect.y > BARRIER_BOUNDARY:
-                self.lose_game_text()
-                pygame.time.delay(2000)
-                return True
-
     def main_loop(self):
         while 1:
             if GameState.start_screen:
@@ -391,7 +396,6 @@ class Pyvader:
                 if self.win_round():
                     self.next_round()
 
-                
 
 if __name__ == "__main__":
     pyvader = Pyvader()
