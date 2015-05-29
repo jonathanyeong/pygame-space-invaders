@@ -8,15 +8,7 @@ class AlienManager:
         self.init_alien_sprite()
 
     def init_alien_sprite(self):
-        sprite = pygame.image.load("assets/images/alien_1a.png")
-        sprite = pygame.transform.scale(sprite, (27, 20))
-        Alien.image = sprite
-        sprite = pygame.image.load("assets/images/alien_2a.png")
-        sprite = pygame.transform.scale(sprite, (27, 20))
-        AlienTwo.image = sprite
-        sprite = pygame.image.load("assets/images/alien_3a.png")
-        sprite = pygame.transform.scale(sprite, (27, 20))
-        AlienThree.image = sprite
+        pass
 
     def alien_image_type(self, typeOfAlien, speed_multiplier):
         speed = 20 
