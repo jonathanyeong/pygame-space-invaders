@@ -7,8 +7,6 @@ import random
 from gamestate import GameState
 from player import Player
 from alien import Alien
-from alien_two import AlienTwo
-from alien_three import AlienThree
 from mothership import Mothership
 from missile import Missile
 from alien_manager import AlienManager

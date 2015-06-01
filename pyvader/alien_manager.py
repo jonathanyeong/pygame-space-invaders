@@ -1,7 +1,5 @@
 import pygame
 from alien import Alien
-from alien_two import AlienTwo
-from alien_three import AlienThree
 
 class AlienManager:
     def __init__(self):
@@ -16,11 +14,4 @@ class AlienManager:
         row_distance = 30
         steps = 15
         alien = Alien(speed, wait_time, row_distance, steps, typeOfAlien)
-        #if (typeOfAlien == 0):
-        #    alien = AlienThree(speed, wait_time, row_distance, steps)
-        #elif (typeOfAlien == 1 or typeOfAlien == 2):
-        #    alien = AlienTwo(speed, wait_time, row_distance, steps)
-        #else:
-        #    alien = Alien(speed, wait_time, row_distance, steps)
-
         return alien
