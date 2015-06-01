@@ -3,11 +3,19 @@ from utility import image_loader
 from gamestate import GameState
 
 class Alien(pygame.sprite.Sprite):
-    def __init__(self, speed, wait_time, row_distance, steps):
+    def __init__(self, speed, wait_time, row_distance, steps, typeOfAlien):
         pygame.sprite.Sprite.__init__(self)
         self.images = []
-        self.images.append(image_loader.load_image("assets/images/alien_1a.png"))
-        self.images.append(image_loader.load_image("assets/images/alien_1b.png"))
+        if (typeOfAlien == 0):
+            self.images.append(image_loader.load_image("assets/images/alien_3a.png"))
+            self.images.append(image_loader.load_image("assets/images/alien_3b.png"))
+        elif (typeOfAlien == 1 or typeOfAlien == 2):
+            self.images.append(image_loader.load_image("assets/images/alien_2a.png"))
+            self.images.append(image_loader.load_image("assets/images/alien_2b.png"))
+        else:
+            self.images.append(image_loader.load_image("assets/images/alien_1a.png"))
+            self.images.append(image_loader.load_image("assets/images/alien_1b.png"))
+            
         self.index = 0 
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
@@ -31,6 +39,8 @@ class Alien(pygame.sprite.Sprite):
                 self.has_moved += 1
             else:
                 self.rect.y += self.vector[1] * self.row_distance
+                self.speed += self.speed * 0.2
+                self.steps -= self.steps * 0.2
                 self.has_moved = 0
                 self.vector[0] *= -1
             self.time = GameState.alien_time
