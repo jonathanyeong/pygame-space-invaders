@@ -46,7 +46,8 @@ class Pyvader:
         GameState.start_screen = True
         # Sound FX
         self.bullet_fx = pygame.mixer.Sound('assets/sounds/shoot.wav')
-
+        self.explode = False
+        self.init_player_explosion()
 
     def init_sprite_groups(self):
         self.player_group = pygame.sprite.Group()
@@ -99,6 +100,12 @@ class Pyvader:
         missile.speed = 5
         missile.vector = 1
         return missile
+
+    def init_player_explosion(self):
+        img = pygame.image.load("assets/images/player_destroyed.png")
+        img = pygame.transform.scale(img, (PLAYER_HEIGHT, PLAYER_WIDTH))
+        self.explosion_img = img
+
     # ----------------------------------------------------
     #               VIDEO/DISPLAY Methods
     # ----------------------------------------------------
@@ -305,8 +312,16 @@ class Pyvader:
         if keys[K_r] or keys[K_u]:
             GameState.shoot_bullet = True
 
+    def player_explosion(self):
+        if self.explode:
+            self.screen.blit(self.explosion_img, [self.player.rect.x, self.player.rect.y])
+            pygame.display.update()
+            self.explode = False
+            time.sleep(1)
+
     def render_screen(self):
         self.background.fill((10, 10, 10))
+        self.player_explosion()
         self.screen.blit(self.background, (0, 0))
         self.all_sprite_list.draw(self.screen)
         self.refresh_scores()
@@ -346,6 +361,7 @@ class Pyvader:
         if pygame.sprite.groupcollide(
                 self.player_group, self.missile_group, False, True):
             self.player_lives -= 1
+            self.explode = True
 
         for z in pygame.sprite.groupcollide(
                 self.alien_group, self.bullet_group, True, True):
@@ -358,7 +374,6 @@ class Pyvader:
 
         for z in pygame.sprite.groupcollide(
                 self.mothership_group, self.bullet_group, True, True):
-            print "Shots taken!: ", GameState.shots_taken
             if GameState.shots_taken <= 23:
                 self.score += 300
             elif GameState.shots_taken > 23 and GameState.shots_taken <= 33:
@@ -382,7 +397,6 @@ class Pyvader:
                 self.update()
                 self.render_screen()
                 # mothership appears every 25 seconds
-                print "Mothership time: %d" % (GameState.mothership_time - self.time)
                 if GameState.mothership_time - self.time > 25000:
                     GameState.mothership_animating = True
                     if (len(self.mothership_group) == 0):
