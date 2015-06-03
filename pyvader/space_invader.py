@@ -43,7 +43,6 @@ class Pyvader:
         self.alien_manager = AlienManager()
         self.alien_manager.init_alien_sprite()
         self.font = pygame.font.Font(None, 42)
-        self.time = pygame.time.get_ticks()
         GameState.start_screen = True
         # Sound FX
         self.bullet_fx = pygame.mixer.Sound('assets/sounds/shoot.wav')
@@ -294,6 +293,7 @@ class Pyvader:
 
         if keys[K_RETURN]:
             if GameState.start_screen:
+                self.time = pygame.time.get_ticks()
                 GameState.start_screen = False
                 self.reset_game()
                 self.score = 0
@@ -382,6 +382,7 @@ class Pyvader:
                 self.update()
                 self.render_screen()
                 # mothership appears every 25 seconds
+                print "Mothership time: %d" % (GameState.mothership_time - self.time)
                 if GameState.mothership_time - self.time > 25000:
                     GameState.mothership_animating = True
                     if (len(self.mothership_group) == 0):
