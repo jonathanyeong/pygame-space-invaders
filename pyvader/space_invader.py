@@ -45,6 +45,9 @@ class Pyvader:
         self.font = pygame.font.Font(None, 42)
         self.time = pygame.time.get_ticks()
         GameState.start_screen = True
+        # Sound FX
+        self.bullet_fx = pygame.mixer.Sound('assets/sounds/shoot.wav')
+
 
     def init_sprite_groups(self):
         self.player_group = pygame.sprite.Group()
@@ -171,6 +174,7 @@ class Pyvader:
         # This fixes the issue where multiple bullets will keep firing
         # because the keypress is registered multiple times (debouncing issue)
         if len(self.bullet_group) == 0:
+            self.bullet_fx.play()
             GameState.shots_taken += 1
             bullet = self.init_bullet()
             self.bullet_group.add(bullet)
