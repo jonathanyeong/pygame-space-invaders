@@ -47,7 +47,9 @@ class Pyvader:
         # Sound FX
         self.bullet_fx = pygame.mixer.Sound('assets/sounds/shoot.wav')
         self.explode = False
+        self.alien_explode = False
         self.init_player_explosion()
+        self.init_alien_explosion()
 
     def init_sprite_groups(self):
         self.player_group = pygame.sprite.Group()
@@ -105,6 +107,13 @@ class Pyvader:
         img = pygame.image.load("assets/images/player_destroyed.png")
         img = pygame.transform.scale(img, (PLAYER_HEIGHT, PLAYER_WIDTH))
         self.explosion_img = img
+
+    def init_alien_explosion(self):
+        img = pygame.image.load("assets/images/explosion.png")
+        img = pygame.transform.scale(img, (ALIEN_WIDTH, ALIEN_HEIGHT))
+        self.alien_explosion_img = img
+        self.explodey_alien = []  # The alien that was destroyed
+        self.alien_explode_pos = 0
 
     # ----------------------------------------------------
     #               VIDEO/DISPLAY Methods
@@ -319,9 +328,21 @@ class Pyvader:
             self.explode = False
             time.sleep(1)
 
+    def alien_explosion(self):
+        if self.alien_explode:
+            if self.alien_explode_pos < 9:
+                self.screen.blit(self.alien_explosion_img, [int(self.explodey_alien[0]), int(self.explodey_alien[1])])
+                pygame.display.update()
+                self.alien_explode_pos += 1
+            else:
+                self.alien_explode = False
+                self.alien_explode_pos = 0
+                self.explodey_alien = []
+
     def render_screen(self):
         self.background.fill((10, 10, 10))
         self.player_explosion()
+        self.alien_explosion()
         self.screen.blit(self.background, (0, 0))
         self.all_sprite_list.draw(self.screen)
         self.refresh_scores()
@@ -371,6 +392,10 @@ class Pyvader:
                 self.score += 20
             elif z.__class__.__name__ == "AlienThree":
                 self.score += 40
+
+            self.alien_explode = True
+            self.explodey_alien.append(z.rect.x)
+            self.explodey_alien.append(z.rect.y)
 
         for z in pygame.sprite.groupcollide(
                 self.mothership_group, self.bullet_group, True, True):
