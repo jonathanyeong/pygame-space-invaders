@@ -33,14 +33,13 @@ class Alien(pygame.sprite.Sprite):
             self.index += 1
             if self.index >= len(self.images):
                 self.index = 0
-            self.image = self.images[self.index]
+            self.image = self.images[self.index]  # Animating the alien
             if self.has_moved < self.steps:
                 self.rect.x += self.vector[0] * self.speed
                 self.has_moved += 1
             else:
                 self.rect.y += self.vector[1] * self.row_distance
-                self.speed += self.speed * 0.2
-                self.steps -= self.steps * 0.2
+                self.wait_time -= self.wait_time * 0.2
                 self.has_moved = 0
                 self.vector[0] *= -1
             self.time = GameState.alien_time

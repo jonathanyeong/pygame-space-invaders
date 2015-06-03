@@ -10,6 +10,7 @@ class AlienManager:
 
     def alien_image_type(self, typeOfAlien, speed_multiplier):
         speed = 20 
+        # Speed multiplier here is used when a new round starts
         wait_time = 1500 - (50 * (speed_multiplier - 1))
         row_distance = 30
         steps = 15
