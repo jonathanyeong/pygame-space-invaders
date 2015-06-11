@@ -46,6 +46,10 @@ class Pyvader:
         GameState.start_screen = True
         # Sound FX
         self.bullet_fx = pygame.mixer.Sound('assets/sounds/shoot.wav')
+        self.bullet_fx.set_volume(0.3)
+        self.player_explosion_fx = pygame.mixer.Sound('assets/sounds/explosion.wav')
+        self.alien_explosion_fx = pygame.mixer.Sound('assets/sounds/invaderkilled.wav')
+        self.alien_explosion_fx.set_volume(0.1)
         self.explode = False
         self.alien_explode = False
         self.init_player_explosion()
@@ -324,6 +328,7 @@ class Pyvader:
     def player_explosion(self):
         if self.explode:
             self.screen.blit(self.explosion_img, [self.player.rect.x, self.player.rect.y])
+            self.player_explosion_fx.play()
             pygame.display.update()
             self.explode = False
             time.sleep(1)
@@ -334,6 +339,7 @@ class Pyvader:
                 self.screen.blit(self.alien_explosion_img, [int(self.explodey_alien[0]), int(self.explodey_alien[1])])
                 pygame.display.update()
                 self.alien_explode_pos += 1
+                self.alien_explosion_fx.play()
             else:
                 self.alien_explode = False
                 self.alien_explode_pos = 0
