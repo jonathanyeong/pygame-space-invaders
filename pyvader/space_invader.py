@@ -11,6 +11,7 @@ from mothership import Mothership
 from missile import Missile
 from alien_manager import AlienManager
 from block import Block
+from menu import *
 from pygame.locals import *
 
 ALIEN_ROWS = 5
@@ -54,6 +55,18 @@ class Pyvader:
         self.alien_explode = False
         self.init_player_explosion()
         self.init_alien_explosion()
+        screen_center = self.screen.get_rect().center
+        self.menu = cMenu(screen_center[0], screen_center[1]+100, 20, 5, 'vertical', 100, self.screen,
+                        [('Start Game', 1, None),
+                         ('High Scores', 2, None),
+                         ('Exit Game', 3, None)])
+        self.menu.set_center(True, False)
+        self.menu.set_alignment('center', 'center')
+        self.state = 0
+        self.prev_state = 1
+        self.rect_list = []
+        pygame.event.set_blocked(pygame.MOUSEMOTION)
+
 
     def init_sprite_groups(self):
         self.player_group = pygame.sprite.Group()
@@ -128,10 +141,12 @@ class Pyvader:
             self.main_menu_text()
             logo = pygame.image.load("assets/images/ClearLogo.png")
             bg_center = self.background.get_rect().center
-            self.background.blit(logo, logo.get_rect(center=bg_center))
-            self.screen.blit(self.background, (0, 0))
-            pygame.display.update()
+            self.screen.blit(logo, logo.get_rect(center=(bg_center[0], bg_center[1] - (logo.get_rect().height/2))))
+            if self.prev_state != self.state:
+                pygame.event.post(pygame.event.Event(EVENT_CHANGE_STATE, key = 0))
+                self.prev_state = self.state
             self.process_input()
+            pygame.display.update(self.rect_list)
 
     def draw_text(self, render_text, pos, background=None):
         if background is None:
@@ -159,9 +174,9 @@ class Pyvader:
                                                self.background.get_rect().midtop)
         self.background.blit(title_text, textpos)
         # Display instruction text
-        (instruction_text, textpos) = self.draw_text("Press B to start",
-                                                     self.background.get_rect().midbottom)
-        self.background.blit(instruction_text, textpos)
+        #(instruction_text, textpos) = self.draw_text("Press B to start",
+        #                                             self.background.get_rect().midbottom)
+        #self.background.blit(instruction_text, textpos)
 
     # ----------------------------------------------------
     #               Sprite Factory Methods
@@ -295,7 +310,20 @@ class Pyvader:
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == KEYDOWN:
+            if event.type == KEYDOWN or event.type == EVENT_CHANGE_STATE:
+                if self.state == 0:
+                    self.rect_list, self.state = self.menu.update(event, self.state)
+                elif self.state == 1:
+                    print "Start Game"
+                    state = 0
+                elif self.state == 2:
+                    print "High scores"
+                    state = 0
+                else:
+                    print "Exit game"
+                    pygame.quit()
+                    sys.exit()
+
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     sys.exit()
