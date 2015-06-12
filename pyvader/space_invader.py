@@ -311,18 +311,26 @@ class Pyvader:
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN or event.type == EVENT_CHANGE_STATE:
-                if self.state == 0:
-                    self.rect_list, self.state = self.menu.update(event, self.state)
-                elif self.state == 1:
-                    print "Start Game"
-                    state = 0
-                elif self.state == 2:
-                    print "High scores"
-                    state = 0
-                else:
-                    print "Exit game"
-                    pygame.quit()
-                    sys.exit()
+                if GameState.start_screen:
+                    if self.state == 0:
+                        self.rect_list, self.state = self.menu.update(event, self.state)
+                    elif self.state == 1:
+                        self.time = pygame.time.get_ticks()
+                        GameState.start_screen = False
+                        self.reset_game()
+                        self.score = 0
+                        self.make_player()
+                        self.make_mothership()
+                        self.make_alien_wave(1)
+                        self.make_defenses()
+                        self.state = 0
+                    elif self.state == 2:
+                        print "High scores"
+                        self.state = 0
+                    else:
+                        print "Exit game"
+                        pygame.quit()
+                        sys.exit()
 
                 if event.key == K_ESCAPE:
                     pygame.quit()
@@ -338,17 +346,6 @@ class Pyvader:
             GameState.vector = -1
         else:
             GameState.vector = 0
-
-        if keys[K_RETURN]:
-            if GameState.start_screen:
-                self.time = pygame.time.get_ticks()
-                GameState.start_screen = False
-                self.reset_game()
-                self.score = 0
-                self.make_player()
-                self.make_mothership()
-                self.make_alien_wave(1)
-                self.make_defenses()
 
         if keys[K_r] or keys[K_u]:
             GameState.shoot_bullet = True
