@@ -11,10 +11,11 @@ class ScoreTracker:
         scores = self.read_score()
         if scores is None:
             return scores
+        scores = map(int, scores)
         if scores.count < 5:
             return scores
         scores.sort(reverse=True)
-        return scores[:4]
+        return scores[:5]
 
     def save_score(self, score):
         # Save score to text file/database?
@@ -34,8 +35,7 @@ class ScoreTracker:
             try:
                 reader = csv.reader(f)
                 for row in reader:
-                    score_list.append(row)
-                    print row[0]
+                    score_list.append(row[0])
             finally:
                 f.close()
         else:
