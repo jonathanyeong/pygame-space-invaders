@@ -341,8 +341,7 @@ class Pyvader:
                         self.reset_game()
                         self.state = 0
                     elif self.state == 2:
-                        print "High scores"
-                        self.score_tracker.top_five()
+                        print "scores: ", self.score_tracker.top_five()
                         self.state = 0
                     else:
                         pygame.quit()
@@ -475,10 +474,10 @@ class Pyvader:
                     self.time = GameState.mothership_time
                 if self.is_dead() or self.defenses_breached():
                     GameState.start_screen = True
-                    print "High score: ", self.score
                     self.score_tracker.save_score(self.score)
                     self.background.fill((10, 10, 10))
                     self.screen.blit(self.background, (0, 0))
+                    pygame.display.update()
                 if self.win_round():
                     self.next_round()
 
