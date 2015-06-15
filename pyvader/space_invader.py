@@ -187,10 +187,6 @@ class Pyvader:
         (title_text, textpos) = self.draw_text("Space Invaders",
                                                self.background.get_rect().midtop)
         self.background.blit(title_text, textpos)
-        # Display instruction text
-        #(instruction_text, textpos) = self.draw_text("Press B to start",
-        #                                             self.background.get_rect().midbottom)
-        #self.background.blit(instruction_text, textpos)
 
     # ----------------------------------------------------
     #               Sprite Factory Methods
