@@ -27,10 +27,14 @@ BARRIER_BOUNDARY = SCREEN_HEIGHT - 120
 
 
 class Pyvader:
-    def __init__(self):
+    def __init__(self, opts):
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT),
                                               DOUBLEBUF)
+        for o, a in opts:
+            if o == "-f":
+                self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT),
+                                                       DOUBLEBUF | FULLSCREEN)
         pygame.display.set_caption("Pygame Space Invader Prototype")
         self.screen.fill((10, 10, 10))
         self.clock = pygame.time.Clock()
