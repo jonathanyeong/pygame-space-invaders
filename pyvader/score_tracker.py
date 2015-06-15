@@ -16,7 +16,7 @@ class ScoreTracker:
     
     def save_score(self, score):
         # Save score to text file/database?
-        f = open('high_scores.csv', 'w')
+        f = open('high_scores.csv', 'a')
         print "writing score"
         try:
             writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
