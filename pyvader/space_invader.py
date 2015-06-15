@@ -342,6 +342,7 @@ class Pyvader:
                         self.state = 0
                     elif self.state == 2:
                         print "High scores"
+                        self.score_tracker.top_five()
                         self.state = 0
                     else:
                         pygame.quit()
