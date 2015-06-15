@@ -273,15 +273,6 @@ class Pyvader:
             self.screen.blit(title_text, textpos)
             pygame.display.flip()
 
-    def reset_game(self):
-        for items in [self.bullet_group, self.player_group,
-                      self.alien_group, self.missile_group,
-                      self.barrier_group]:
-            for i in items:
-                i.kill()
-        self.player_lives = PLAYER_LIVES
-        self.rounds_won = 0
-        GameState.shots_taken = 0
 
     def win_round(self):
         if len(self.alien_group) < 1:
@@ -314,6 +305,22 @@ class Pyvader:
     # ----------------------------------------------------
     #               Main Loop Methods
     # ----------------------------------------------------
+    def reset_game(self):
+        for items in [self.bullet_group, self.player_group,
+                      self.alien_group, self.missile_group,
+                      self.barrier_group]:
+            for i in items:
+                i.kill()
+        self.player_lives = PLAYER_LIVES
+        self.rounds_won = 0
+        GameState.shots_taken = 0
+        self.time = pygame.time.get_ticks()
+        GameState.start_screen = False
+        self.score = 0
+        self.make_player()
+        self.make_mothership()
+        self.make_alien_wave(1)
+        self.make_defenses()
 
     def process_input(self):
         for event in pygame.event.get():
@@ -325,40 +332,31 @@ class Pyvader:
                     if self.state == 0:
                         self.rect_list, self.state = self.menu.update(event, self.state)
                     elif self.state == 1:
-                        self.time = pygame.time.get_ticks()
-                        GameState.start_screen = False
                         self.reset_game()
-                        self.score = 0
-                        self.make_player()
-                        self.make_mothership()
-                        self.make_alien_wave(1)
-                        self.make_defenses()
                         self.state = 0
                     elif self.state == 2:
                         print "High scores"
                         self.state = 0
                     else:
-                        print "Exit game"
                         pygame.quit()
                         sys.exit()
-
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     sys.exit()
                 if event.key == K_SLASH:
                     self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT),
                                                           DOUBLEBUF | FULLSCREEN)
-
-        keys = pygame.key.get_pressed()
-        if keys[K_k]:
-            GameState.vector = 1
-        elif keys[K_d]:
-            GameState.vector = -1
-        else:
-            GameState.vector = 0
-
-        if keys[K_r] or keys[K_u]:
-            GameState.shoot_bullet = True
+        
+        if not GameState.start_screen:
+            keys = pygame.key.get_pressed()
+            if keys[K_k]:
+                GameState.vector = 1
+            elif keys[K_d]:
+                GameState.vector = -1
+            else:
+                GameState.vector = 0
+            if keys[K_r] or keys[K_u]:
+                GameState.shoot_bullet = True
 
     def player_explosion(self):
         if self.explode:
