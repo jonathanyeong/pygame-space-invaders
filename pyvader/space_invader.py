@@ -33,28 +33,19 @@ class Pyvader:
                                               DOUBLEBUF)
         pygame.display.set_caption("Pygame Space Invader Prototype")
         self.screen.fill((10, 10, 10))
-        self.background = pygame.Surface(self.screen.get_size())
-        self.background = self.background.convert()
-        self.background.fill((10, 10, 10))
         self.clock = pygame.time.Clock()
-        self.init_sprite_groups()
-        self.init_player_sprite()
-        self.init_mothership_sprite()
-        self.init_gamestate()
         self.alien_manager = AlienManager()
-        self.alien_manager.init_alien_sprite()
         self.font = pygame.font.Font(None, 42)
         GameState.start_screen = True
-        # Sound FX
-        self.bullet_fx = pygame.mixer.Sound('assets/sounds/shoot.wav')
-        self.bullet_fx.set_volume(0.3)
-        self.player_explosion_fx = pygame.mixer.Sound('assets/sounds/explosion.wav')
-        self.alien_explosion_fx = pygame.mixer.Sound('assets/sounds/invaderkilled.wav')
-        self.alien_explosion_fx.set_volume(0.1)
-        self.explode = False
-        self.alien_explode = False
-        self.init_player_explosion()
-        self.init_alien_explosion()
+        self.set_background()
+        self.init_gamestate()
+        self.init_sprites()
+        self.init_sfx()
+        self.init_explosions()
+        self.init_menu()
+        pygame.event.set_blocked(pygame.MOUSEMOTION)
+
+    def init_menu(self):
         screen_center = self.screen.get_rect().center
         self.menu = cMenu(screen_center[0], screen_center[1]+100, 20, 5, 'vertical', 100, self.screen,
                         [('Start Game', 1, None),
@@ -62,11 +53,34 @@ class Pyvader:
                          ('Exit Game', 3, None)])
         self.menu.set_center(True, False)
         self.menu.set_alignment('center', 'center')
+        # States are used for the menu
         self.state = 0
         self.prev_state = 1
         self.rect_list = []
-        pygame.event.set_blocked(pygame.MOUSEMOTION)
 
+    def init_explosions(self):
+        self.explode = False
+        self.alien_explode = False
+        self.init_player_explosion()
+        self.init_alien_explosion()
+
+    def init_sfx(self):
+        self.bullet_fx = pygame.mixer.Sound('assets/sounds/shoot.wav')
+        self.bullet_fx.set_volume(0.3)
+        self.player_explosion_fx = pygame.mixer.Sound('assets/sounds/explosion.wav')
+        self.alien_explosion_fx = pygame.mixer.Sound('assets/sounds/invaderkilled.wav')
+        self.alien_explosion_fx.set_volume(0.1)
+
+    def set_background(self):
+        self.background = pygame.Surface(self.screen.get_size())
+        self.background = self.background.convert()
+        self.background.fill((10, 10, 10))
+
+    def init_sprites(self):
+        self.init_sprite_groups()
+        self.init_player_sprite()
+        self.init_mothership_sprite()
+        self.alien_manager.init_alien_sprite()
 
     def init_sprite_groups(self):
         self.player_group = pygame.sprite.Group()
