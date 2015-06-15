@@ -11,6 +11,7 @@ from mothership import Mothership
 from missile import Missile
 from alien_manager import AlienManager
 from block import Block
+from score_tracker import ScoreTracker
 from menu import *
 from pygame.locals import *
 
@@ -47,6 +48,7 @@ class Pyvader:
         self.init_sfx()
         self.init_explosions()
         self.init_menu()
+        self.score_tracker = ScoreTracker()
         pygame.event.set_blocked(pygame.MOUSEMOTION)
 
     def init_menu(self):
@@ -472,6 +474,10 @@ class Pyvader:
                     self.time = GameState.mothership_time
                 if self.is_dead() or self.defenses_breached():
                     GameState.start_screen = True
+                    print "High score: ", self.score
+                    self.score_tracker.save_score(self.score)
+                    self.background.fill((10, 10, 10))
+                    self.screen.blit(self.background, (0, 0))
                 if self.win_round():
                     self.next_round()
 
