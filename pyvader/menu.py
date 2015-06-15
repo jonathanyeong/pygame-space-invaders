@@ -600,32 +600,32 @@ class cMenu:
       s = self.selection
       n = self.change_number
 
-      if e.key == pygame.K_DOWN:
+      if e.key == pygame.K_m or e.key == pygame.K_c:
          if (o == 'vertical') and ((s + 1) % n != 0):
             self.selection += 1
          elif o == 'horizontal':
             self.selection += n
-      elif e.key == pygame.K_UP:
+      elif e.key == pygame.K_u or e.key == pygame.K_r:
          if (o == 'vertical') and ((s) % n != 0):
             self.selection -= 1
          elif o == 'horizontal':
             self.selection -= n
-      elif e.key == pygame.K_RIGHT:
+      elif e.key == pygame.K_k:
          if o == 'vertical':
             self.selection += n
          elif (o == 'horizontal') and ((s + 1) % n != 0):
             self.selection += 1
-      elif e.key == pygame.K_LEFT:
+      elif e.key == pygame.K_d:
          if o == 'vertical':
             self.selection -= n
          elif (o == 'horizontal') and ((s) % n != 0):
             self.selection -= 1
-      elif e.key == pygame.K_r:
-         original_contained_rect = self.remove_buttons([s])
-         if self.selection -1 >= 0:
-            self.selection -= 1
-            self.selection_prev -= 1
-         redraw_full_menu = True
+      #elif e.key == pygame.K_r:
+         #original_contained_rect = self.remove_buttons([s])
+         #if self.selection -1 >= 0:
+            #self.selection -= 1
+            #self.selection_prev -= 1
+         #redraw_full_menu = True
       elif e.key == pygame.K_RETURN:
          return [None], self.menu_items[s]['state']
 
