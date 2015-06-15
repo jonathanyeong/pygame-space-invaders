@@ -10,10 +10,12 @@ class ScoreTracker:
     def top_five(self):
         scores = self.read_score()
         if scores is None:
-            print "file didn't exist"
-        else:
-            print scores
-    
+            return scores
+        if scores.count < 5:
+            return scores
+        scores.sort(reverse=True)
+        return scores[:4]
+
     def save_score(self, score):
         # Save score to text file/database?
         f = open('high_scores.csv', 'a')
