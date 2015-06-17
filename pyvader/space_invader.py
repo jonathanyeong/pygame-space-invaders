@@ -42,6 +42,7 @@ class Pyvader:
         self.alien_manager = AlienManager()
         self.font = pygame.font.Font(None, 42)
         GameState.start_screen = True
+        GameState.score_screen = False
         self.set_background()
         self.init_gamestate()
         self.init_sprites()
@@ -57,6 +58,8 @@ class Pyvader:
                         [('Start Game', 1, None),
                          ('High Scores', 2, None),
                          ('Exit Game', 3, None)])
+        self.score_menu = cMenu(screen_center[0], screen_center[1]+100, 20, 5, 'vertical', 100, self.screen,
+                              [('Back', 0, None)])
         self.menu.set_center(True, False)
         self.menu.set_alignment('center', 'center')
         # States are used for the menu
