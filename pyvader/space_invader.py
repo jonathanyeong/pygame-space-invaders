@@ -354,14 +354,17 @@ class Pyvader:
                 sys.exit()
             if event.type == KEYDOWN or event.type == EVENT_CHANGE_STATE:
                 if GameState.start_screen:
+                    print "state: ", self.state
                     if self.state == 0:
                         self.rect_list, self.state = self.menu.update(event, self.state)
+                        print "rect list len: ", len(self.rect_list)
                     elif self.state == 1:
                         self.reset_game()
                         self.state = 0
                     elif self.state == 2:
-                        print "scores: ", self.score_tracker.top_five()
-                        self.state = 0
+                        self.rect_list, self.state = self.score_menu.update(event, self.state)
+                        print "rect list len: ", len(self.rect_list)
+                        GameState.score_screen = True
                     else:
                         pygame.quit()
                         sys.exit()
