@@ -62,6 +62,8 @@ class Pyvader:
                               [('Back', 0, None)])
         self.menu.set_center(True, False)
         self.menu.set_alignment('center', 'center')
+        self.score_menu.set_center(True, False)
+        self.score_menu.set_alignment('center', 'center')
         # States are used for the menu
         self.state = 0
         self.prev_state = 1
@@ -339,7 +341,6 @@ class Pyvader:
             self.prev_state = self.state
             print "state: ", self.state
             if self.state in [0, 2]:
-                print "clear dat screen"
                 self.clear_screen()
                 pygame.display.flip()
 
@@ -350,6 +351,7 @@ class Pyvader:
             if event.type == KEYDOWN or event.type == EVENT_CHANGE_STATE:
                 if GameState.start_screen:
                     if self.state == 0:
+                        GameState.score_screen = False
                         self.rect_list, self.state = self.menu.update(event, self.state)
                         print "rect list len: ", len(self.rect_list)
                     elif self.state == 1:
