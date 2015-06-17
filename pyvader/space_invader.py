@@ -182,12 +182,6 @@ class Pyvader:
 
         return text, textpos
 
-    def main_menu_text(self):
-        # Display title text
-        (title_text, textpos) = self.draw_text("Space Invaders",
-                                               self.background.get_rect().midtop)
-        self.background.blit(title_text, textpos)
-
     # ----------------------------------------------------
     #               Sprite Factory Methods
     # ----------------------------------------------------
@@ -326,9 +320,8 @@ class Pyvader:
         if is_score_screen:
             (title_text, textpos) = self.draw_text("High score",
                                                 self.background.get_rect().midtop)
-            self.background.blit(title_text, textpos)
+            self.screen.blit(title_text, textpos)
         else:
-            self.main_menu_text()
             logo = pygame.image.load("assets/images/ClearLogo.png")
             bg_center = self.background.get_rect().center
             self.screen.blit(logo, logo.get_rect(center=(bg_center[0], bg_center[1] - (logo.get_rect().height/2))))
