@@ -321,6 +321,15 @@ class Pyvader:
             (title_text, textpos) = self.draw_text("High score",
                                                 self.background.get_rect().midtop)
             self.screen.blit(title_text, textpos)
+            score_list = self.score_tracker.top_five()
+            spacing = 1
+            (x, y) = self.background.get_rect().midtop
+            y += 30
+            for s in score_list:
+                (title_text, textpos) = self.draw_text("Player score: %d"%s,
+                                                    (x, y*spacing+80))
+                self.screen.blit(title_text, textpos)
+                spacing += 1
         else:
             logo = pygame.image.load("assets/images/ClearLogo.png")
             bg_center = self.background.get_rect().center
