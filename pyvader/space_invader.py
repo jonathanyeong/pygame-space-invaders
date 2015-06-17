@@ -159,17 +159,6 @@ class Pyvader:
     #               VIDEO/DISPLAY Methods
     # ----------------------------------------------------
 
-    def splash_screen(self):
-        while GameState.start_screen:
-            self.main_menu_text()
-            logo = pygame.image.load("assets/images/ClearLogo.png")
-            bg_center = self.background.get_rect().center
-            self.screen.blit(logo, logo.get_rect(center=(bg_center[0], bg_center[1] - (logo.get_rect().height/2))))
-            if self.prev_state != self.state:
-                pygame.event.post(pygame.event.Event(EVENT_CHANGE_STATE, key = 0))
-                self.prev_state = self.state
-            self.process_input()
-            pygame.display.update(self.rect_list)
 
     def draw_text(self, render_text, pos, background=None):
         if background is None:
@@ -330,6 +319,33 @@ class Pyvader:
         self.make_mothership()
         self.make_alien_wave(1)
         self.make_defenses()
+
+    # Score screen and splash screen should only render the text
+    # It shouldn't be doing any processing
+    def score_screen(self):
+        self.clear_screen()
+        #print "scores: ", self.score_tracker.top_five()
+        (title_text, textpos) = self.draw_text("High score",
+                                            self.background.get_rect().midtop)
+        self.screen.blit(title_text, textpos)
+        pygame.display.update(self.rect_list)
+        #print "score screen"
+        #print self.rect_list
+        #print "state: %d , previous state %d"%(self.state, self.prev_state)
+        if self.prev_state != self.state:
+            pygame.event.post(pygame.event.Event(EVENT_CHANGE_STATE, key = 0))
+            self.prev_state = self.state
+        #pygame.display.update(self.rect_list)
+
+    def splash_screen(self):
+        self.main_menu_text()
+        logo = pygame.image.load("assets/images/ClearLogo.png")
+        bg_center = self.background.get_rect().center
+        self.screen.blit(logo, logo.get_rect(center=(bg_center[0], bg_center[1] - (logo.get_rect().height/2))))
+        if self.prev_state != self.state:
+            pygame.event.post(pygame.event.Event(EVENT_CHANGE_STATE, key = 0))
+            self.prev_state = self.state
+        pygame.display.update(self.rect_list)
 
     def process_input(self):
         for event in pygame.event.get():
