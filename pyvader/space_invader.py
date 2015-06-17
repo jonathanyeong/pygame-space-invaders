@@ -320,41 +320,36 @@ class Pyvader:
         self.make_alien_wave(1)
         self.make_defenses()
 
-    # Score screen and splash screen should only render the text
-    # It shouldn't be doing any processing
-    def score_screen(self):
-        self.clear_screen()
-        #print "scores: ", self.score_tracker.top_five()
-        (title_text, textpos) = self.draw_text("High score",
-                                            self.background.get_rect().midtop)
-        self.screen.blit(title_text, textpos)
-        pygame.display.update(self.rect_list)
-        #print "score screen"
-        #print self.rect_list
-        #print "state: %d , previous state %d"%(self.state, self.prev_state)
-        if self.prev_state != self.state:
-            pygame.event.post(pygame.event.Event(EVENT_CHANGE_STATE, key = 0))
-            self.prev_state = self.state
-        #pygame.display.update(self.rect_list)
+    def render_menu(self, is_score_screen):
+        if is_score_screen:
+            (title_text, textpos) = self.draw_text("High score",
+                                                self.background.get_rect().midtop)
+            self.background.blit(title_text, textpos)
+        else:
+            self.main_menu_text()
+            logo = pygame.image.load("assets/images/ClearLogo.png")
+            bg_center = self.background.get_rect().center
+            self.screen.blit(logo, logo.get_rect(center=(bg_center[0], bg_center[1] - (logo.get_rect().height/2))))
 
-    def splash_screen(self):
-        self.main_menu_text()
-        logo = pygame.image.load("assets/images/ClearLogo.png")
-        bg_center = self.background.get_rect().center
-        self.screen.blit(logo, logo.get_rect(center=(bg_center[0], bg_center[1] - (logo.get_rect().height/2))))
-        if self.prev_state != self.state:
-            pygame.event.post(pygame.event.Event(EVENT_CHANGE_STATE, key = 0))
-            self.prev_state = self.state
         pygame.display.update(self.rect_list)
 
     def process_input(self):
+        if self.prev_state != self.state:
+            pygame.event.post(pygame.event.Event(EVENT_CHANGE_STATE, key = 0))
+            self.prev_state = self.state
+            print "state: ", self.state
+            if self.state in [0, 2]:
+                print "clear dat screen"
+                self.clear_screen()
+                pygame.display.flip()
+
+        #event = pygame.event.wait()
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN or event.type == EVENT_CHANGE_STATE:
                 if GameState.start_screen:
-                    print "state: ", self.state
                     if self.state == 0:
                         self.rect_list, self.state = self.menu.update(event, self.state)
                         print "rect list len: ", len(self.rect_list)
@@ -484,11 +479,13 @@ class Pyvader:
     def main_loop(self):
         while 1:
             if GameState.start_screen:
-                if not GameState.score_screen:
-                    self.splash_screen()
-                else:
-                    self.score_screen()
+                #if not GameState.score_screen:
+                    #self.splash_screen()
+                #else:
+                    #self.score_screen()
                 self.process_input()
+                # It should render screen because we want to keep this same loop.
+                self.render_menu(GameState.score_screen)
             elif not GameState.start_screen:
                 GameState.alien_time = pygame.time.get_ticks()
                 GameState.mothership_time = pygame.time.get_ticks()
