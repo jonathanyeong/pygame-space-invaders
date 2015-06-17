@@ -476,10 +476,19 @@ class Pyvader:
                 self.score += 50
             GameState.shots_taken = 0
 
+    def clear_screen(self):
+        self.background.fill((10, 10, 10))
+        self.screen.blit(self.background, (0, 0))
+        pygame.display.update()
+
     def main_loop(self):
         while 1:
             if GameState.start_screen:
-                self.splash_screen()
+                if not GameState.score_screen:
+                    self.splash_screen()
+                else:
+                    self.score_screen()
+                self.process_input()
             elif not GameState.start_screen:
                 GameState.alien_time = pygame.time.get_ticks()
                 GameState.mothership_time = pygame.time.get_ticks()
@@ -497,9 +506,7 @@ class Pyvader:
                 if self.is_dead() or self.defenses_breached():
                     GameState.start_screen = True
                     self.score_tracker.save_score(self.score)
-                    self.background.fill((10, 10, 10))
-                    self.screen.blit(self.background, (0, 0))
-                    pygame.display.update()
+                    self.clear_screen()
                 if self.win_round():
                     self.next_round()
 
