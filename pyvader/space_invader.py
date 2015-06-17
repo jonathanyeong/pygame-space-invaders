@@ -343,7 +343,6 @@ class Pyvader:
                 self.clear_screen()
                 pygame.display.flip()
 
-        #event = pygame.event.wait()
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -479,12 +478,7 @@ class Pyvader:
     def main_loop(self):
         while 1:
             if GameState.start_screen:
-                #if not GameState.score_screen:
-                    #self.splash_screen()
-                #else:
-                    #self.score_screen()
                 self.process_input()
-                # It should render screen because we want to keep this same loop.
                 self.render_menu(GameState.score_screen)
             elif not GameState.start_screen:
                 GameState.alien_time = pygame.time.get_ticks()
