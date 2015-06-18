@@ -341,7 +341,6 @@ class Pyvader:
         if self.prev_state != self.state:
             pygame.event.post(pygame.event.Event(EVENT_CHANGE_STATE, key = 0))
             self.prev_state = self.state
-            print "state: ", self.state
             if self.state in [0, 2]:
                 self.clear_screen()
                 pygame.display.flip()
@@ -355,13 +354,13 @@ class Pyvader:
                     if self.state == 0:
                         GameState.score_screen = False
                         self.rect_list, self.state = self.menu.update(event, self.state)
-                        print "rect list len: ", len(self.rect_list)
+                        #print "rect list len: ", len(self.rect_list)
                     elif self.state == 1:
                         self.reset_game()
                         self.state = 0
                     elif self.state == 2:
                         self.rect_list, self.state = self.score_menu.update(event, self.state)
-                        print "rect list len: ", len(self.rect_list)
+                        #print "rect list len: ", len(self.rect_list)
                         GameState.score_screen = True
                     else:
                         pygame.quit()
@@ -501,7 +500,8 @@ class Pyvader:
                 if self.is_dead() or self.defenses_breached():
                     GameState.start_screen = True
                     self.score_tracker.save_score(self.score)
-                    self.clear_screen()
+                    self.state = 0
+                    self.prev_state = 1
                 if self.win_round():
                     self.next_round()
 
