@@ -3,22 +3,13 @@
 > PyGame clone of Space Invaders
 
 # Usage
+To run this game:
 
-To run the app:
-
-1. `$ python pyvader/space_invader.py`
+1. `$ cd pyvader/`
+2. `$ python launcher.py`
 
 To test the app:
 
-1. Make sure you are in the directory above tests. Which is the same directory
-as your README.md.
-2. Run `$ nosetests`
+3. Run `$ nosetests` from the root project directory.
 
-# Current stage (20/04/2015)
-
-- Refactoring player class
-- Refactoring main class
-
-# Next milestone
-
-- [ ] Get player firing missile working.
+# Tracking 
